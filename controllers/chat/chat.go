@@ -67,9 +67,8 @@ func GetAllGroupMsg(u *gin.Context) {
 func GetGroupLastMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
 	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
-	flag, _ := strconv.ParseInt(u.Query("flag"), 10, 64)
 
-	msg, err := chat.GetGroupLastMsg(group_id, uid, flag)
+	msg, err := chat.GetGroupLastMsg(group_id, uid)
 	if err != nil {
 		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeError, err.Error()))
 		return
@@ -85,9 +84,8 @@ func GetGroupLastMsg(u *gin.Context) {
 func ReadGroupLastMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.PostForm("group_id"), 10, 64)
 	uid, _ := strconv.ParseInt(u.PostForm("uid"), 10, 64)
-	flag, _ := strconv.ParseInt(u.PostForm("flag"), 10, 64)
 
-	ss := chat.ReadGroupLastMsg(group_id, uid, flag)
+	ss := chat.ReadGroupLastMsg(group_id, uid)
 	u.JSON(http.StatusOK, ss)
 }
 
@@ -98,7 +96,6 @@ func MassMessage(u *gin.Context) {
 	send_uids := u.PostForm("send_uids")
 	from_uid := u.PostForm("from_uid")
 	content := u.PostForm("content")
-	flag := u.PostForm("flag")
-	ss := chat.MassMessage(group_ids, send_uids, from_uid, content, flag)
+	ss := chat.MassMessage(group_ids, send_uids, from_uid, content)
 	u.JSON(http.StatusOK, ss)
 }

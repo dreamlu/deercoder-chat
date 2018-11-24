@@ -3,17 +3,16 @@ package chat
 import (
 	"deercder-chat/models/chat"
 	"fmt"
+	"github.com/Dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
-	"time"
 )
 
 //客户端
 type Client struct {
 	GroupID string //标识客户端
 	UID     int64	//结合flag，唯一标识用户id
-	Flag	int64
 	Conn    *websocket.Conn
 }
 
@@ -69,7 +68,7 @@ func WsHander(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 		//fmt.Println(msg)
-		msg.ID = time.Now().UnixNano()
+		msg.UUID = uuid.NewV1().String()
 		ct.GroupID = msg.GroupId //客户端唯一标识
 		ct.UID = msg.FromUid
 		//fmt.Println("用户flag",msg.Flag)
@@ -77,7 +76,7 @@ func WsHander(w http.ResponseWriter, r *http.Request) {
 		broadcast <- msg
 
 		//send broadcast, then save the message
-		chat.CreateGroupMsg(msg.ID, msg.GroupId, msg.FromUid, msg.Content, msg.ContentType)
+		chat.CreateGroupMsg(msg.UUID, msg.GroupId, msg.FromUid, msg.Content, msg.ContentType)
 	}
 }
 
@@ -109,7 +108,7 @@ func handleMessages() {
 	into:for _, v2 := range clients {
 		if v2.GroupID == msg.GroupId { //在线用户
 			for k,v := range gusers {
-				if v2.UID == v.Uid && v2.Flag == v.Flag{
+				if v2.UID == v.Uid {
 					gusers = append(gusers[:k], gusers[k+1:]...) //去除在线用户
 					goto into
 				}
@@ -119,7 +118,7 @@ func handleMessages() {
 		//剩下的为群聊离线用户
 		//记录离线消息
 		for _, v := range gusers{
-			chat.CreateGroupLastMsg(msg.GroupId,v.Uid,v.Flag,msg.ID)
+			chat.CreateGroupLastMsg(msg.GroupId,v.Uid, msg.UUID)
 		}
 	}
 }
