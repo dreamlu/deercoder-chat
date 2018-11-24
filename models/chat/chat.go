@@ -5,48 +5,37 @@ import (
 	"fmt"
 	"github.com/Dreamlu/deercoder-gin"
 	"github.com/Dreamlu/deercoder-gin/util/lib"
-	"strconv"
+	"github.com/Dreamlu/go.uuid"
 	"strings"
 	"time"
 )
 
 // Define our message object,teacher message model
 type Message struct {
-	ID          int64         `json:"id"`           //群组消息id
-	GroupId     string        `json:"group_id"`     //组id
-	FromUid     int64         `json:"from_uid"`     //来自用户id
-	Headimg     string        `json:"headimg"`      //头像
-	Username    string        `json:"username"`     //用户名
-	Content     string        `json:"content"`      //消息内容
-	Flag        int64         `json:"flag"`         //0老师,1学生
-	ContentType string        `json:"content_type"` //前台用
+	ID          int64              `json:"id"`           //群组消息id
+	GroupId     string             `json:"group_id"`     //组id
+	FromUid     int64              `json:"from_uid"`     //来自用户id
+	Headimg     string             `json:"headimg"`      //头像
+	Username    string             `json:"username"`     //用户名
+	Content     string             `json:"content"`      //消息内容
+	ContentType string             `json:"content_type"` //前台用
 	CreateTime  deercoder.JsonTime `json:"create_time"`  //创建时间
-	//SendFrom	string `json:"send_from"`
 }
 
 /*群聊发送模型*/
 type GroupMsg struct {
-	ID         int64         `json:"id"`
-	GroupID    string        `json:"group_id"`    //群聊id
-	Content    int64         `json:"content"`     //消息内容
-	FromUid    int64         `json:"from_uid"`    //由谁发送
-	Flag       int64         `json:"flag"`        //0老师,1学生
+	ID         int64              `json:"id"`
+	GroupID    string             `json:"group_id"`    //群聊id
+	Content    int64              `json:"content"`     //消息内容
+	FromUid    int64              `json:"from_uid"`    //由谁发送
 	CreateTime deercoder.JsonTime `json:"create_time"` //创建时间
 }
 
-///*聊天内容*///暂时废弃
-//type Msg struct {
-//	ID         int64         `json:"id"`
-//	Content    string        `json:"content"`
-//	CreateTime util.JsonTime `json:"create_time"`
-//}
-
-/*聊天配置*/
+/*群聊最后记录*/
 type GroupLastMsg struct {
 	ID             int64  `json:"id"`
 	GroupID        string `json:"group_id"` //群聊id
 	Uid            int64  `json:"uid"`
-	Flag           int64  `json:"flag"` //0老师,1学生
 	LastGroupMsgId int64  `json:"last_group_msg_id"`
 }
 
@@ -65,52 +54,41 @@ type GroupUsers struct {
 
 //建立群组,未来扩展
 //返回群组id
-func DistributeGroup(studentids, teacherids string) (groupId int64, err error) {
+func DistributeGroup(uids string) (groupId string, err error) {
 
-	if studentids == "" && teacherids == "" {
-		return 0, nil
+	if uids == "" {
+		return "", nil
 	}
 
-	sids := strings.Split(studentids, ",")
-	//唯一群号
-	//gidstr := time.Now().Format("20060102150405")
-	//gidstr = string([]byte(gidstr)[2:])
-	groupId = time.Now().UnixNano() //纳秒 //strconv.ParseInt(gidstr, 10, 64)
-	gidstr := strconv.FormatInt(groupId, 10)
-	sql := "insert `group_users`(group_id,uid,flag) value"
-	for _, v := range sids { //学生
+	userids := strings.Split(uids, ",")
+	//唯一群id
+	u1 := uuid.NewV1()
+	groupId = u1.String()
+	sql := "insert `group_users`(group_id,uid) value"
+	for _, v := range userids { //学生
 		if v == "" {
 			continue
 		}
-		sql += "(" + gidstr + "," + v + ",1),"
+		sql += "('" + groupId + "'," + v + "),"
 	}
-
-	tids := strings.Split(teacherids, ",")
-	for _, v := range tids { //老师
-		if v == "" {
-			continue
-		}
-		sql += "(" + gidstr + "," + v + ",0),"
-	}
-
 	sql = string([]byte(sql)[:len(sql)-1])
 
 	dba := deercoder.DB.Exec(sql)
 	num := dba.RowsAffected
 
 	if num == 0 {
-		return 0, dba.Error
+		return "", dba.Error
 	}
 
 	return groupId, nil
 }
 
 //群聊消息,创建
-func CreateGroupMsg(id int64, group_id string, from_uid, flag int64, content, content_type string) (err error) {
+func CreateGroupMsg(id int64, group_id string, from_uid int64, content, content_type string) (err error) {
 
 	//需要id,用来每次聊天生成的id作为聊天记录id,以便群离线消息记录该id
-	sql := "insert `group_msg`(id, group_id,content,from_uid, flag, content_type) value(?,?,?,?,?,?)"
-	dba := deercoder.DB.Exec(sql, id, group_id, content, from_uid, flag, content_type)
+	sql := "insert `group_msg`(id, group_id,content,from_uid, content_type) value(?,?,?,?,?,?)"
+	dba := deercoder.DB.Exec(sql, id, group_id, content, from_uid, content_type)
 
 	if dba.Error != nil {
 		return dba.Error
@@ -149,13 +127,9 @@ func GetAllGroupMsg(group_id int64) ([]Message, error) {
 
 		return msg, errors.New("暂无离线消息")
 	}
+	sql = "select username,headimg from `user` where id = ?"
 	for k, v := range msg { //查询对应的头像,用户名等信息
-		sql := "select username,headimg from `teacher` where id = ?"
-		switch v.Flag {
-		case 0: //老师
-		case 1: //学生
-			sql = strings.Replace(sql, "teacher", "student", -1)
-		}
+
 		deercoder.DB.Raw(sql, v.FromUid).Scan(&msg[k])
 	}
 
@@ -186,13 +160,9 @@ func GetGroupLastMsg(group_id, uid, flag int64) ([]Message, error) {
 
 		return msg, errors.New("暂无离线消息")
 	}
+	sql = "select username,headimg from `user` where id = ?"
 	for k, v := range msg { //查询对应的头像,用户名等信息
-		sql := "select username,headimg from `teacher` where id = ?"
-		switch v.Flag {
-		case 0: //老师
-		case 1: //学生
-			sql = strings.Replace(sql, "teacher", "student", -1)
-		}
+
 		deercoder.DB.Raw(sql, v.FromUid).Scan(&msg[k])
 	}
 

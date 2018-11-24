@@ -1,5 +1,7 @@
 github.com/Dreamlu/deercoder-gin v1.0.4 h1:QWKoKNHlfrnzPIUWLqO0Hcqnk2M+3w+FncxWs0WUAaA=
 github.com/Dreamlu/deercoder-gin v1.0.4/go.mod h1:+aQbePOs9Zqo+Ngqn6hih4hxSGeIKR4CmilcLhIjjsw=
+github.com/Dreamlu/go.uuid v1.2.0 h1:s0/oOqBsSyk6KbiGAj0SD5of40Xci/qeY+SQj77yXVk=
+github.com/Dreamlu/go.uuid v1.2.0/go.mod h1:ENBUXVFmEtEBNZX7pDjVoAoasuW5GPyDM2cyHJrHFnw=
 github.com/Knetic/govaluate v3.0.0+incompatible/go.mod h1:r7JcOSlj0wfOMncg0iLm8Leh48TZaKVeNIfJntJ2wa0=
 github.com/casbin/casbin v1.7.0/go.mod h1:c67qKN6Oum3UF5Q1+BByfFxkwKvhwW57ITjqwtzR1KE=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=

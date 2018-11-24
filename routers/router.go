@@ -47,7 +47,16 @@ func SetRouter() *gin.Engine {
 			chats.GET("/ws", chat.ChatWS)
 			chats.GET("/getglmsg", chat.GetGroupLastMsg)
 			chats.POST("/massmsg", chat.MassMessage)
-			chats.POST("/readmsg", chat.ReadMessage)
+			chats.POST("/readmsg", chat.ReadGroupLastMsg)
+			chats.POST("/distchat", chat.DistributeGroup)
+		}
+		users := v.Group("/user")
+		{
+			users.POST("/create",controllers.Create)
+			users.PUT("/update",controllers.Update)
+			users.DELETE("/delete",controllers.DeleteById)
+			users.GET("/getbysearch",controllers.GetBySearch)
+			users.GET("/getbyid",controllers.GetById)
 		}
 	}
 	//不存在路由

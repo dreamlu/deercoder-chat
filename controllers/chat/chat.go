@@ -38,14 +38,13 @@ func ChatWS(u *gin.Context) {
 
 //创建群聊
 func DistributeGroup(u *gin.Context) {
-	studentids := u.PostForm("studentids")
-	teacherids := u.PostForm("teacherids")
-	gid, _ := chat.DistributeGroup(studentids, teacherids)
-	if gid == 0 {
+	uids := u.PostForm("uids")
+	gid, _ := chat.DistributeGroup(uids)
+	if gid == "" {
 		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeChat, "群聊创建失败"))
 		return
 	}
-	u.JSON(http.StatusOK, map[string]interface{}{"status": lib.CodeSuccess, "msg": "请求成功", "gid": gid})
+	u.JSON(http.StatusOK, map[string]interface{}{"status": lib.CodeSuccess, "msg": "请求成功", "group_id": gid})
 }
 
 //拉取群聊所有消息

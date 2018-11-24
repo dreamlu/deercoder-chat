@@ -1,50 +1,45 @@
 package controllers
 
 import (
-	"demo/models"
+	"deercder-chat/models"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 //根据id获得用户获取
-func GetUserById(u *gin.Context) {
+func GetById(u *gin.Context) {
 	id := u.Query("id")
-	ss := models.GetUserById(id)
+	ss := models.GetById(id)
 	u.JSON(http.StatusOK, ss)
 }
 
 //用户信息分页
-func GetUserBySearch(u *gin.Context) {
+func GetBySearch(u *gin.Context) {
 	u.Request.ParseForm()
 	values := u.Request.Form //在使用之前需要调用ParseForm方法
-	ss := models.GetUserBySearch(values)
+	ss := models.GetBySearch(values)
 	u.JSON(http.StatusOK, ss)
 }
 
 //用户信息删除
-func DeleteUserById(u *gin.Context) {
+func DeleteById(u *gin.Context) {
 	id := u.Param("id")
-	ss := models.DeleteUserByid(id)
+	ss := models.DeleteByid(id)
 	u.JSON(http.StatusOK, ss)
 }
 
 //用户信息修改
-func UpdateUser(u *gin.Context) {
+func Update(u *gin.Context) {
 	u.Request.ParseForm()
 	values := u.Request.Form //在使用之前需要调用ParseForm方法
-	ss := models.UpdateUser(values)
+	ss := models.Update(values)
 	u.JSON(http.StatusOK, ss)
 }
 
 //新增用户信息
-func CreateUser(u *gin.Context) {
+func Create(u *gin.Context) {
 	u.Request.ParseForm()
-	values := u.Request.Form //在使用之前需要调用ParseForm方法
-	ss := models.CreateUser(values)
+	values := u.Request.Form
+	ss := models.Create(values)
 	u.JSON(http.StatusOK, ss)
 }
-
-/*//修改用户账号密码
-func UpdateAccount(u *gin.Context) {
-
-}*/

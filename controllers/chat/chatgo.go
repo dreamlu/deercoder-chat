@@ -72,13 +72,12 @@ func WsHander(w http.ResponseWriter, r *http.Request) {
 		msg.ID = time.Now().UnixNano()
 		ct.GroupID = msg.GroupId //客户端唯一标识
 		ct.UID = msg.FromUid
-		ct.Flag = msg.Flag
 		//fmt.Println("用户flag",msg.Flag)
 		// Send the newly received message to the broadcast channel
 		broadcast <- msg
 
 		//send broadcast, then save the message
-		chat.CreateGroupMsg(msg.ID, msg.GroupId, msg.FromUid, msg.Flag, msg.Content, msg.ContentType)
+		chat.CreateGroupMsg(msg.ID, msg.GroupId, msg.FromUid, msg.Content, msg.ContentType)
 	}
 }
 
