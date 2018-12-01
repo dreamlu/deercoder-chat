@@ -1,0 +1,50 @@
+/*chat css*/
+html, body {
+    height: 100%;
+}
+.container {
+    height: 80%;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 100px;
+    border-style: solid;
+    border-color: #4e555b;
+    border-radius: 25px;
+    box-shadow: 10px 10px 5px #888;
+}
+.row {
+    width: 100%;
+    height: 100%;
+}
+/*left user*/
+.group-user {
+    background-color: #4e555b;
+    margin-bottom: 0px;
+    height: 100%;
+}
+/*头像等*/
+.headimg {
+    height: 6%;
+}
+/*聊天对象昵称*/
+.chat-group-name p{
+    width: 100%;
+    margin: auto;
+    text-align: center;
+}
+
+/*好友列表*/
+.group-user-list {
+    height: 94%;
+}
+
+/*聊天内容框*/
+.chat-content {
+    height: 70%;
+}
+
+/*发送框*/
+.chat-send {
+    height: 24%;
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>chat</title>
+    <script src="js/jquery.min.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <link href="css/chat.css" rel="stylesheet">
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-3 group-user">
+            <div class="row headimg">
+                <div class="row">
+                    <nav class="nav">
+                        <a class="nav-link active" href="#">头像</a>
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            其他
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="#">Action</a>
+                            <a class="dropdown-item" href="#">Another action</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">Something else here</a>
+                        </div>
+                    </nav>
+                </div>
+            </div>
+            <div class="row group-user-list">
+                <nav class="nav">
+                    <a class="nav-link active" href="#">在线列表</a>
+                    <a class="nav-link disabled" href="#">好友列表</a>
+                </nav>
+            </div>
+        </div>
+        <div class="col-sm">
+            <div class="row headimg chat-group-name">
+                <p>
+                    <a class="nickname" data-toggle="collapse" href="#collapseExample" role="button" aria-expanded="false" aria-controls="collapseExample">
+                    群聊昵称(好友昵称)
+                    </a>
+                </p>
+            </div>
+            <div class="collapse" id="collapseExample">
+                <div class="card card-body">
+                    所有用户头像、昵称等
+                </div>
+            </div>
+            <div class="row chat-content">
+                <div class="col">
+                    <p class="text-left">Left aligned text on all viewport sizes.</p>
+                    <p class="text-right">Right aligned text on all viewport sizes.</p>
+                </div>
+            </div>
+            <div class="row chat-send">
+                <form>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Email address</label>
+                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                    </div>
+                    <button type="submit" class="btn btn-primary">发送</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
