@@ -1,7 +1,7 @@
 package routers
 
 import (
-	"deercoder-chat/user-srv/controllers"
+	"deercoder-chat/api-gateway/controllers"
 	"github.com/dreamlu/deercoder-gin"
 	"github.com/dreamlu/deercoder-gin/util/file"
 	"github.com/dreamlu/deercoder-gin/util/lib"
@@ -40,13 +40,15 @@ func SetRouter() *gin.Engine {
 		//文件上传
 		v.POST("/file/upload", file.UpoadFile)
 
+		//
+		user := controllers.UserService{}
 		users := v.Group("/user")
 		{
-			users.POST("/create", controllers.Create)
-			users.PUT("/update", controllers.Update)
-			users.DELETE("/delete", controllers.DeleteById)
-			users.GET("/search", controllers.GetBySearch)
-			users.GET("/id/:id", controllers.GetById)
+			//users.POST("/create", controllers.UserService{}.Create)
+			//users.PUT("/update", controllers.UserService{}.Update)
+			//users.DELETE("/delete", controllers.UserService{}.DeleteById)
+			//users.GET("/search", controllers.UserService{}.GetBySearch)
+			users.GET("/id/:id", user.GetByID)
 		}
 	}
 	//不存在路由
