@@ -1,11 +1,10 @@
 package routers
 
 import (
-	"deercder-chat/controllers"
-	"deercder-chat/controllers/chat"
-	"github.com/Dreamlu/deercoder-gin"
-	"github.com/Dreamlu/deercoder-gin/util/file"
-	"github.com/Dreamlu/deercoder-gin/util/lib"
+	"deercoder-chat/user-srv/controllers"
+	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/deercoder-gin/util/file"
+	"github.com/dreamlu/deercoder-gin/util/lib"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strings"
@@ -40,23 +39,14 @@ func SetRouter() *gin.Engine {
 		v.POST("/login/login", controllers.Login)
 		//文件上传
 		v.POST("/file/upload", file.UpoadFile)
-		//群聊
-		chats := v.Group("/chat")
-		{
-			chats.GET("/", chat.Chat)
-			chats.GET("/ws", chat.ChatWS)
-			chats.GET("/getglmsg", chat.GetGroupLastMsg)
-			chats.POST("/massmsg", chat.MassMessage)
-			chats.POST("/readmsg", chat.ReadGroupLastMsg)
-			chats.POST("/distchat", chat.DistributeGroup)
-		}
+
 		users := v.Group("/user")
 		{
-			users.POST("/create",controllers.Create)
-			users.PUT("/update",controllers.Update)
-			users.DELETE("/delete",controllers.DeleteById)
-			users.GET("/getbysearch",controllers.GetBySearch)
-			users.GET("/getbyid",controllers.GetById)
+			users.POST("/create", controllers.Create)
+			users.PUT("/update", controllers.Update)
+			users.DELETE("/delete", controllers.DeleteById)
+			users.GET("/search", controllers.GetBySearch)
+			//users.GET("/id/:id", controllers.GetById)
 		}
 	}
 	//不存在路由
@@ -81,21 +71,8 @@ func CheckLogin() gin.HandlerFunc {
 			_, err := c.Cookie("uid")
 			if err != nil {
 				c.Abort()
-				c.JSON(http.StatusOK, lib.MapNoToken)
+				c.JSON(http.StatusOK, lib.MapNoAuth)
 			}
 		}
-
-		/*cookie,err := c.Request.Cookie("uid")
-		if err != nil{
-			fmt.Println("cookie-->uid不存在")
-		}
-		ss, _ := url.QueryUnescape(cookie.Value)
-		// 解密
-		uid, err := util.Decrypt([]byte(ss))
-		if err != nil {
-			fmt.Println("cookie解密失败: ", err)
-			c.Abort()
-			c.JSON(http.StatusOK, lib.MapNoToken)
-		}*/
 	}
 }

@@ -2,8 +2,8 @@ package controllers
 
 import (
 	"fmt"
-	"github.com/Dreamlu/deercoder-gin"
-	"github.com/Dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/deercoder-gin/util/lib"
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"

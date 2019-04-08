@@ -1,8 +1,8 @@
 package chat
 
 import (
-	"deercder-chat/models/chat"
-	"github.com/Dreamlu/deercoder-gin/util/lib"
+	"deercoder-chat/user-srv"
+	"github.com/dreamlu/deercoder-gin/util/lib"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -32,14 +32,14 @@ func Chat(u *gin.Context) {
 //聊天ws
 func ChatWS(u *gin.Context) {
 
-	go handleMessages()
-	WsHander(u.Writer, u.Request)
+	go main.handleMessages()
+	main.WsHander(u.Writer, u.Request)
 }
 
 //创建群聊
 func DistributeGroup(u *gin.Context) {
 	uids := u.PostForm("uids")
-	gid, _ := chat.DistributeGroup(uids)
+	gid, _ := main.DistributeGroup(uids)
 	if gid == "" {
 		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeChat, "群聊创建失败"))
 		return
@@ -51,7 +51,7 @@ func DistributeGroup(u *gin.Context) {
 func GetAllGroupMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
 
-	msg, err := chat.GetAllGroupMsg(group_id)
+	msg, err := main.GetAllGroupMsg(group_id)
 	if err != nil {
 		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeError, err.Error()))
 		return
@@ -68,7 +68,7 @@ func GetGroupLastMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
 	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
 
-	msg, err := chat.GetGroupLastMsg(group_id, uid)
+	msg, err := main.GetGroupLastMsg(group_id, uid)
 	if err != nil {
 		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeError, err.Error()))
 		return
@@ -85,7 +85,7 @@ func ReadGroupLastMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.PostForm("group_id"), 10, 64)
 	uid, _ := strconv.ParseInt(u.PostForm("uid"), 10, 64)
 
-	ss := chat.ReadGroupLastMsg(group_id, uid)
+	ss := main.ReadGroupLastMsg(group_id, uid)
 	u.JSON(http.StatusOK, ss)
 }
 
@@ -96,6 +96,6 @@ func MassMessage(u *gin.Context) {
 	send_uids := u.PostForm("send_uids")
 	from_uid := u.PostForm("from_uid")
 	content := u.PostForm("content")
-	ss := chat.MassMessage(group_ids, send_uids, from_uid, content)
+	ss := main.MassMessage(group_ids, send_uids, from_uid, content)
 	u.JSON(http.StatusOK, ss)
 }

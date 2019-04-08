@@ -1,16 +1,25 @@
 package controllers
 
 import (
-	"deercder-chat/models"
+	"context"
+	"deercoder-chat/user-srv/models"
+	user "deercoder-chat/user-srv/proto"
+	"github.com/dreamlu/deercoder-gin"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
+type UserService struct{}
+
 //根据id获得用户获取
-func GetById(u *gin.Context) {
-	id := u.Query("id")
-	ss := models.GetById(id)
-	u.JSON(http.StatusOK, ss)
+func (p *UserService) GetByID(ctx context.Context, req *user.Request, rsp *user.Response) error {
+	id := req.Id
+	//deercoder.DB.AutoMigrate(user.Response)
+	//var data = models.User{}
+	deercoder.GetDataBySql(&rsp, "select * from `user` where id = ?", strconv.FormatInt(id, 10))
+	//rsp.Name = data.Name
+	return nil
 }
 
 //用户信息分页

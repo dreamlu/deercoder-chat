@@ -3,9 +3,9 @@ package chat
 import (
 	"errors"
 	"fmt"
-	"github.com/Dreamlu/deercoder-gin"
-	"github.com/Dreamlu/deercoder-gin/util/lib"
-	"github.com/Dreamlu/go.uuid"
+	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/go.uuid"
 	"strings"
 )
 

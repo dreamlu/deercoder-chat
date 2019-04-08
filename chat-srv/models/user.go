@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/Dreamlu/deercoder-gin"
+	"github.com/dreamlu/deercoder-gin"
 	"time"
 )
 
@@ -19,7 +19,7 @@ func GetById(id string) interface{} {
 
 	deercoder.DB.AutoMigrate(&User{})
 	var user = User{}
-	return deercoder.GetDataById(&user, id)
+	return deercoder.GetDataByID(&user, id)
 }
 
 // get user, limit and search
