@@ -87,6 +87,7 @@ github.com/docker/go-connections v0.4.0/go.mod h1:Gbd7IOopHjR8Iph03tsViu4nIes5Xh
 github.com/docker/go-units v0.3.3/go.mod h1:fgPhTUdO+D/Jk86RDLlptpiXQzgHJF7gydDDbaIK4Dk=
 github.com/dreamlu/deercoder-gin v1.2.1 h1:ZHm9QpkII5IYZq6meLMVWPWjVtzGuP9GX3RF4taW1AU=
 github.com/dreamlu/deercoder-gin v1.2.1/go.mod h1:8cCmT6rJee6xWKnJGiMO/mI/f0DMFvjzbtKbnU5aDVI=
+github.com/dreamlu/deercoder-gin v1.2.2/go.mod h1:8cCmT6rJee6xWKnJGiMO/mI/f0DMFvjzbtKbnU5aDVI=
 github.com/dreamlu/go.uuid v1.2.0 h1:+02sI0xJuGpU7pJfp1UCAtqdp91HlCI+yL89bQSnvrI=
 github.com/dreamlu/go.uuid v1.2.0/go.mod h1:kIAkYrHDHtNWOWgaAwq9mPP8ucywVtO9XyTciy8Xhok=
 github.com/dreamlu/resize v0.0.0-20180221191011-83c6a9932646 h1:xHdtHvnCl8+HI3N47/YRkFOi7Bee/MCFRVTfU1WV4Xo=

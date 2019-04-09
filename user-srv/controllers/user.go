@@ -7,7 +7,6 @@ import (
 	"github.com/dreamlu/deercoder-gin"
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"strconv"
 )
 
 type UserService struct{}
@@ -17,7 +16,7 @@ func (p *UserService) GetByID(ctx context.Context, req *user.Request, rsp *user.
 	id := req.Id
 	//deercoder.DB.AutoMigrate(user.Response)
 	//var data = models.User{}
-	deercoder.GetDataBySql(&rsp, "select * from `user` where id = ?", strconv.FormatInt(id, 10))
+	deercoder.GetDataBySql(&rsp, "select * from `user` where id = ?", id)
 	//rsp.Name = data.Name
 	return nil
 }
