@@ -2,8 +2,8 @@ syntax = "proto3";
 
 package user;
 
-// response
-message Response {
+// user model
+message User {
     int64 id = 1;
     string name = 2;
     string headimg = 3;
@@ -11,12 +11,45 @@ message Response {
     string createtime = 5;
 }
 
-// request
+// search model
+message searchData {
+    repeated User user = 1;
+    // limit ?, ? sum data count
+    int64 sumPage = 2;
+}
+
+// common request
 message Request {
+    map<string, string> params = 1;
+}
+
+// request
+message ID {
     int64 id = 1;
 }
 
+// true/false
+message Boolean {
+    bool bool = 1;
+}
+
 // user service
+// rpc crud
 service UserService {
-    rpc GetByID(Request) returns (Response) {}
+
+    // by search data
+    rpc GetBySearch (Request) returns (searchData) {
+    }
+    // by id
+    rpc GetByID (ID) returns (User) {
+    }
+    // delete data
+    rpc Delete (ID) returns (Boolean) {
+    }
+    // update data
+    rpc Update (Request) returns (Boolean) {
+    }
+    // create data
+    rpc Create (Request) returns (ID) {
+    }
 }

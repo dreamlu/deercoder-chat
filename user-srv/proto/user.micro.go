@@ -34,7 +34,16 @@ var _ server.Option
 // Client API for UserService service
 
 type UserService interface {
-	GetByID(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	// by search data
+	GetBySearch(ctx context.Context, in *Request, opts ...client.CallOption) (*SearchData, error)
+	// by id
+	GetByID(ctx context.Context, in *ID, opts ...client.CallOption) (*User, error)
+	// delete data
+	Delete(ctx context.Context, in *ID, opts ...client.CallOption) (*Boolean, error)
+	// update data
+	Update(ctx context.Context, in *Request, opts ...client.CallOption) (*Boolean, error)
+	// create data
+	Create(ctx context.Context, in *Request, opts ...client.CallOption) (*ID, error)
 }
 
 type userService struct {
@@ -55,9 +64,49 @@ func NewUserService(name string, c client.Client) UserService {
 	}
 }
 
-func (c *userService) GetByID(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+func (c *userService) GetBySearch(ctx context.Context, in *Request, opts ...client.CallOption) (*SearchData, error) {
+	req := c.c.NewRequest(c.name, "UserService.GetBySearch", in)
+	out := new(SearchData)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) GetByID(ctx context.Context, in *ID, opts ...client.CallOption) (*User, error) {
 	req := c.c.NewRequest(c.name, "UserService.GetByID", in)
-	out := new(Response)
+	out := new(User)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Delete(ctx context.Context, in *ID, opts ...client.CallOption) (*Boolean, error) {
+	req := c.c.NewRequest(c.name, "UserService.Delete", in)
+	out := new(Boolean)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Update(ctx context.Context, in *Request, opts ...client.CallOption) (*Boolean, error) {
+	req := c.c.NewRequest(c.name, "UserService.Update", in)
+	out := new(Boolean)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *userService) Create(ctx context.Context, in *Request, opts ...client.CallOption) (*ID, error) {
+	req := c.c.NewRequest(c.name, "UserService.Create", in)
+	out := new(ID)
 	err := c.c.Call(ctx, req, out, opts...)
 	if err != nil {
 		return nil, err
@@ -68,12 +117,25 @@ func (c *userService) GetByID(ctx context.Context, in *Request, opts ...client.C
 // Server API for UserService service
 
 type UserServiceHandler interface {
-	GetByID(context.Context, *Request, *Response) error
+	// by search data
+	GetBySearch(context.Context, *Request, *SearchData) error
+	// by id
+	GetByID(context.Context, *ID, *User) error
+	// delete data
+	Delete(context.Context, *ID, *Boolean) error
+	// update data
+	Update(context.Context, *Request, *Boolean) error
+	// create data
+	Create(context.Context, *Request, *ID) error
 }
 
 func RegisterUserServiceHandler(s server.Server, hdlr UserServiceHandler, opts ...server.HandlerOption) error {
 	type userService interface {
-		GetByID(ctx context.Context, in *Request, out *Response) error
+		GetBySearch(ctx context.Context, in *Request, out *SearchData) error
+		GetByID(ctx context.Context, in *ID, out *User) error
+		Delete(ctx context.Context, in *ID, out *Boolean) error
+		Update(ctx context.Context, in *Request, out *Boolean) error
+		Create(ctx context.Context, in *Request, out *ID) error
 	}
 	type UserService struct {
 		userService
@@ -86,6 +148,22 @@ type userServiceHandler struct {
 	UserServiceHandler
 }
 
-func (h *userServiceHandler) GetByID(ctx context.Context, in *Request, out *Response) error {
+func (h *userServiceHandler) GetBySearch(ctx context.Context, in *Request, out *SearchData) error {
+	return h.UserServiceHandler.GetBySearch(ctx, in, out)
+}
+
+func (h *userServiceHandler) GetByID(ctx context.Context, in *ID, out *User) error {
 	return h.UserServiceHandler.GetByID(ctx, in, out)
+}
+
+func (h *userServiceHandler) Delete(ctx context.Context, in *ID, out *Boolean) error {
+	return h.UserServiceHandler.Delete(ctx, in, out)
+}
+
+func (h *userServiceHandler) Update(ctx context.Context, in *Request, out *Boolean) error {
+	return h.UserServiceHandler.Update(ctx, in, out)
+}
+
+func (h *userServiceHandler) Create(ctx context.Context, in *Request, out *ID) error {
+	return h.UserServiceHandler.Create(ctx, in, out)
 }

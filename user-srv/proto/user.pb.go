@@ -20,8 +20,8 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion3 // please upgrade the proto package
 
-// response
-type Response struct {
+// user model
+type User struct {
 	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name                 string   `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
 	Headimg              string   `protobuf:"bytes,3,opt,name=headimg,proto3" json:"headimg,omitempty"`
@@ -32,79 +32,128 @@ type Response struct {
 	XXX_sizecache        int32    `json:"-"`
 }
 
-func (m *Response) Reset()         { *m = Response{} }
-func (m *Response) String() string { return proto.CompactTextString(m) }
-func (*Response) ProtoMessage()    {}
-func (*Response) Descriptor() ([]byte, []int) {
+func (m *User) Reset()         { *m = User{} }
+func (m *User) String() string { return proto.CompactTextString(m) }
+func (*User) ProtoMessage()    {}
+func (*User) Descriptor() ([]byte, []int) {
 	return fileDescriptor_116e343673f7ffaf, []int{0}
 }
 
-func (m *Response) XXX_Unmarshal(b []byte) error {
-	return xxx_messageInfo_Response.Unmarshal(m, b)
+func (m *User) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_User.Unmarshal(m, b)
 }
-func (m *Response) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
-	return xxx_messageInfo_Response.Marshal(b, m, deterministic)
+func (m *User) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_User.Marshal(b, m, deterministic)
 }
-func (m *Response) XXX_Merge(src proto.Message) {
-	xxx_messageInfo_Response.Merge(m, src)
+func (m *User) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_User.Merge(m, src)
 }
-func (m *Response) XXX_Size() int {
-	return xxx_messageInfo_Response.Size(m)
+func (m *User) XXX_Size() int {
+	return xxx_messageInfo_User.Size(m)
 }
-func (m *Response) XXX_DiscardUnknown() {
-	xxx_messageInfo_Response.DiscardUnknown(m)
+func (m *User) XXX_DiscardUnknown() {
+	xxx_messageInfo_User.DiscardUnknown(m)
 }
 
-var xxx_messageInfo_Response proto.InternalMessageInfo
+var xxx_messageInfo_User proto.InternalMessageInfo
 
-func (m *Response) GetId() int64 {
+func (m *User) GetId() int64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
-func (m *Response) GetName() string {
+func (m *User) GetName() string {
 	if m != nil {
 		return m.Name
 	}
 	return ""
 }
 
-func (m *Response) GetHeadimg() string {
+func (m *User) GetHeadimg() string {
 	if m != nil {
 		return m.Headimg
 	}
 	return ""
 }
 
-func (m *Response) GetPassword() string {
+func (m *User) GetPassword() string {
 	if m != nil {
 		return m.Password
 	}
 	return ""
 }
 
-func (m *Response) GetCreatetime() string {
+func (m *User) GetCreatetime() string {
 	if m != nil {
 		return m.Createtime
 	}
 	return ""
 }
 
-// request
-type Request struct {
-	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+// search model
+type SearchData struct {
+	User []*User `protobuf:"bytes,1,rep,name=user,proto3" json:"user,omitempty"`
+	// limit ?, ? sum data count
+	SumPage              int64    `protobuf:"varint,2,opt,name=sumPage,proto3" json:"sumPage,omitempty"`
 	XXX_NoUnkeyedLiteral struct{} `json:"-"`
 	XXX_unrecognized     []byte   `json:"-"`
 	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *SearchData) Reset()         { *m = SearchData{} }
+func (m *SearchData) String() string { return proto.CompactTextString(m) }
+func (*SearchData) ProtoMessage()    {}
+func (*SearchData) Descriptor() ([]byte, []int) {
+	return fileDescriptor_116e343673f7ffaf, []int{1}
+}
+
+func (m *SearchData) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_SearchData.Unmarshal(m, b)
+}
+func (m *SearchData) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_SearchData.Marshal(b, m, deterministic)
+}
+func (m *SearchData) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_SearchData.Merge(m, src)
+}
+func (m *SearchData) XXX_Size() int {
+	return xxx_messageInfo_SearchData.Size(m)
+}
+func (m *SearchData) XXX_DiscardUnknown() {
+	xxx_messageInfo_SearchData.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_SearchData proto.InternalMessageInfo
+
+func (m *SearchData) GetUser() []*User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+func (m *SearchData) GetSumPage() int64 {
+	if m != nil {
+		return m.SumPage
+	}
+	return 0
+}
+
+// common request
+type Request struct {
+	Params               map[string]string `protobuf:"bytes,1,rep,name=params,proto3" json:"params,omitempty" protobuf_key:"bytes,1,opt,name=key,proto3" protobuf_val:"bytes,2,opt,name=value,proto3"`
+	XXX_NoUnkeyedLiteral struct{}          `json:"-"`
+	XXX_unrecognized     []byte            `json:"-"`
+	XXX_sizecache        int32             `json:"-"`
 }
 
 func (m *Request) Reset()         { *m = Request{} }
 func (m *Request) String() string { return proto.CompactTextString(m) }
 func (*Request) ProtoMessage()    {}
 func (*Request) Descriptor() ([]byte, []int) {
-	return fileDescriptor_116e343673f7ffaf, []int{1}
+	return fileDescriptor_116e343673f7ffaf, []int{2}
 }
 
 func (m *Request) XXX_Unmarshal(b []byte) error {
@@ -125,33 +174,128 @@ func (m *Request) XXX_DiscardUnknown() {
 
 var xxx_messageInfo_Request proto.InternalMessageInfo
 
-func (m *Request) GetId() int64 {
+func (m *Request) GetParams() map[string]string {
+	if m != nil {
+		return m.Params
+	}
+	return nil
+}
+
+// request
+type ID struct {
+	Id                   int64    `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *ID) Reset()         { *m = ID{} }
+func (m *ID) String() string { return proto.CompactTextString(m) }
+func (*ID) ProtoMessage()    {}
+func (*ID) Descriptor() ([]byte, []int) {
+	return fileDescriptor_116e343673f7ffaf, []int{3}
+}
+
+func (m *ID) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_ID.Unmarshal(m, b)
+}
+func (m *ID) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_ID.Marshal(b, m, deterministic)
+}
+func (m *ID) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_ID.Merge(m, src)
+}
+func (m *ID) XXX_Size() int {
+	return xxx_messageInfo_ID.Size(m)
+}
+func (m *ID) XXX_DiscardUnknown() {
+	xxx_messageInfo_ID.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_ID proto.InternalMessageInfo
+
+func (m *ID) GetId() int64 {
 	if m != nil {
 		return m.Id
 	}
 	return 0
 }
 
+// true/false
+type Boolean struct {
+	Bool                 bool     `protobuf:"varint,1,opt,name=bool,proto3" json:"bool,omitempty"`
+	XXX_NoUnkeyedLiteral struct{} `json:"-"`
+	XXX_unrecognized     []byte   `json:"-"`
+	XXX_sizecache        int32    `json:"-"`
+}
+
+func (m *Boolean) Reset()         { *m = Boolean{} }
+func (m *Boolean) String() string { return proto.CompactTextString(m) }
+func (*Boolean) ProtoMessage()    {}
+func (*Boolean) Descriptor() ([]byte, []int) {
+	return fileDescriptor_116e343673f7ffaf, []int{4}
+}
+
+func (m *Boolean) XXX_Unmarshal(b []byte) error {
+	return xxx_messageInfo_Boolean.Unmarshal(m, b)
+}
+func (m *Boolean) XXX_Marshal(b []byte, deterministic bool) ([]byte, error) {
+	return xxx_messageInfo_Boolean.Marshal(b, m, deterministic)
+}
+func (m *Boolean) XXX_Merge(src proto.Message) {
+	xxx_messageInfo_Boolean.Merge(m, src)
+}
+func (m *Boolean) XXX_Size() int {
+	return xxx_messageInfo_Boolean.Size(m)
+}
+func (m *Boolean) XXX_DiscardUnknown() {
+	xxx_messageInfo_Boolean.DiscardUnknown(m)
+}
+
+var xxx_messageInfo_Boolean proto.InternalMessageInfo
+
+func (m *Boolean) GetBool() bool {
+	if m != nil {
+		return m.Bool
+	}
+	return false
+}
+
 func init() {
-	proto.RegisterType((*Response)(nil), "user.Response")
+	proto.RegisterType((*User)(nil), "user.User")
+	proto.RegisterType((*SearchData)(nil), "user.searchData")
 	proto.RegisterType((*Request)(nil), "user.Request")
+	proto.RegisterMapType((map[string]string)(nil), "user.Request.ParamsEntry")
+	proto.RegisterType((*ID)(nil), "user.ID")
+	proto.RegisterType((*Boolean)(nil), "user.Boolean")
 }
 
 func init() { proto.RegisterFile("user.proto", fileDescriptor_116e343673f7ffaf) }
 
 var fileDescriptor_116e343673f7ffaf = []byte{
-	// 200 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xe2, 0xe2, 0x2a, 0x2d, 0x4e, 0x2d,
-	0xd2, 0x2b, 0x28, 0xca, 0x2f, 0xc9, 0x17, 0x62, 0x01, 0xb1, 0x95, 0x5a, 0x18, 0xb9, 0x38, 0x82,
-	0x52, 0x8b, 0x0b, 0xf2, 0xf3, 0x8a, 0x53, 0x85, 0xf8, 0xb8, 0x98, 0x32, 0x53, 0x24, 0x18, 0x15,
-	0x18, 0x35, 0x98, 0x83, 0x98, 0x32, 0x53, 0x84, 0x84, 0xb8, 0x58, 0xf2, 0x12, 0x73, 0x53, 0x25,
-	0x98, 0x14, 0x18, 0x35, 0x38, 0x83, 0xc0, 0x6c, 0x21, 0x09, 0x2e, 0xf6, 0x8c, 0xd4, 0xc4, 0x94,
-	0xcc, 0xdc, 0x74, 0x09, 0x66, 0xb0, 0x30, 0x8c, 0x2b, 0x24, 0xc5, 0xc5, 0x51, 0x90, 0x58, 0x5c,
-	0x5c, 0x9e, 0x5f, 0x94, 0x22, 0xc1, 0x02, 0x96, 0x82, 0xf3, 0x85, 0xe4, 0xb8, 0xb8, 0x92, 0x8b,
-	0x52, 0x13, 0x4b, 0x52, 0x4b, 0x32, 0x73, 0x53, 0x25, 0x58, 0xc1, 0xb2, 0x48, 0x22, 0x4a, 0x92,
-	0x5c, 0xec, 0x41, 0xa9, 0x85, 0xa5, 0xa9, 0xc5, 0x25, 0xe8, 0x8e, 0x30, 0xb2, 0xe4, 0xe2, 0x0e,
-	0x2d, 0x4e, 0x2d, 0x0a, 0x4e, 0x2d, 0x2a, 0xcb, 0x4c, 0x4e, 0x15, 0xd2, 0xe2, 0x62, 0x77, 0x4f,
-	0x2d, 0x71, 0xaa, 0xf4, 0x74, 0x11, 0xe2, 0xd5, 0x03, 0x7b, 0x07, 0xaa, 0x51, 0x8a, 0x0f, 0xc6,
-	0x85, 0xf8, 0x46, 0x89, 0x21, 0x89, 0x0d, 0xec, 0x53, 0x63, 0x40, 0x00, 0x00, 0x00, 0xff, 0xff,
-	0xa9, 0x17, 0x54, 0xc5, 0xf7, 0x00, 0x00, 0x00,
+	// 369 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x64, 0x52, 0x4d, 0xaf, 0xd2, 0x40,
+	0x14, 0xed, 0xd7, 0x6b, 0x79, 0xb7, 0xd1, 0xbc, 0xdc, 0xbc, 0x45, 0x6d, 0x22, 0xc1, 0x61, 0xd3,
+	0x15, 0x51, 0xdc, 0xa8, 0x4b, 0xac, 0x1a, 0x76, 0x64, 0x08, 0x3f, 0x60, 0xa0, 0x37, 0xd0, 0xd8,
+	0xd2, 0x3a, 0x33, 0x85, 0xb0, 0xf3, 0x57, 0xfa, 0x7b, 0x4c, 0xa7, 0x05, 0x2b, 0x6f, 0x77, 0xcf,
+	0x3d, 0xa7, 0xa7, 0x67, 0xce, 0x0c, 0x40, 0xa3, 0x48, 0xce, 0x6a, 0x59, 0xe9, 0x0a, 0xbd, 0x76,
+	0x66, 0xbf, 0x6d, 0xf0, 0x36, 0x8a, 0x24, 0xbe, 0x06, 0x27, 0xcf, 0x22, 0x7b, 0x62, 0x27, 0x2e,
+	0x77, 0xf2, 0x0c, 0x11, 0xbc, 0xa3, 0x28, 0x29, 0x72, 0x26, 0x76, 0xf2, 0xc8, 0xcd, 0x8c, 0x11,
+	0x04, 0x07, 0x12, 0x59, 0x5e, 0xee, 0x23, 0xd7, 0xac, 0xaf, 0x10, 0x63, 0x18, 0xd5, 0x42, 0xa9,
+	0x73, 0x25, 0xb3, 0xc8, 0x33, 0xd4, 0x0d, 0xe3, 0x18, 0x60, 0x27, 0x49, 0x68, 0xd2, 0x79, 0x49,
+	0xd1, 0x83, 0x61, 0x07, 0x1b, 0xf6, 0x1d, 0x40, 0x91, 0x90, 0xbb, 0x43, 0x2a, 0xb4, 0xc0, 0x31,
+	0x98, 0x60, 0x91, 0x3d, 0x71, 0x93, 0x70, 0x0e, 0x33, 0x93, 0xb8, 0x4d, 0xc8, 0xcd, 0xbe, 0xcd,
+	0xa0, 0x9a, 0x72, 0x25, 0xf6, 0x5d, 0x34, 0x97, 0x5f, 0x21, 0x3b, 0x43, 0xc0, 0xe9, 0x57, 0x43,
+	0x4a, 0xe3, 0x07, 0xf0, 0x6b, 0x21, 0x45, 0xa9, 0x7a, 0x9b, 0x37, 0x9d, 0x4d, 0x4f, 0xcf, 0x56,
+	0x86, 0xfb, 0x76, 0xd4, 0xf2, 0xc2, 0x7b, 0x61, 0xfc, 0x19, 0xc2, 0xc1, 0x1a, 0x9f, 0xc0, 0xfd,
+	0x49, 0x17, 0xd3, 0xc7, 0x23, 0x6f, 0x47, 0x7c, 0x86, 0x87, 0x93, 0x28, 0x9a, 0x6b, 0x23, 0x1d,
+	0xf8, 0xe2, 0x7c, 0xb2, 0xd9, 0x33, 0x38, 0xcb, 0xf4, 0xbe, 0x40, 0xf6, 0x16, 0x82, 0x45, 0x55,
+	0x15, 0x24, 0x8e, 0x6d, 0x97, 0xdb, 0xaa, 0x2a, 0x0c, 0x39, 0xe2, 0x66, 0x9e, 0xff, 0xb1, 0x21,
+	0x6c, 0x8f, 0xb5, 0x26, 0x79, 0xca, 0x77, 0x84, 0xef, 0x21, 0xfc, 0x41, 0x7a, 0x71, 0x59, 0x9b,
+	0x2a, 0xf0, 0xd5, 0x7f, 0x89, 0xe3, 0xa7, 0x0e, 0xfe, 0xeb, 0x89, 0x59, 0xf8, 0x0e, 0x02, 0xf3,
+	0xc5, 0x32, 0xc5, 0x51, 0x47, 0x2f, 0xd3, 0x78, 0x50, 0x18, 0xb3, 0x70, 0x0a, 0x7e, 0x4a, 0x05,
+	0x69, 0x1a, 0x28, 0x7a, 0xe7, 0x3e, 0x1b, 0xb3, 0x30, 0x01, 0x7f, 0x53, 0x67, 0x42, 0xd3, 0xfd,
+	0x4f, 0x5f, 0x28, 0xa7, 0xe0, 0x7f, 0x35, 0xf7, 0x76, 0xaf, 0xbc, 0xb9, 0x33, 0x6b, 0xeb, 0x9b,
+	0xe7, 0xf5, 0xf1, 0x6f, 0x00, 0x00, 0x00, 0xff, 0xff, 0x14, 0x96, 0xa0, 0x03, 0x6c, 0x02, 0x00,
+	0x00,
 }
