@@ -40,14 +40,13 @@ func SetRouter() *gin.Engine {
 		//文件上传
 		v.POST("/file/upload", file.UpoadFile)
 
-		//
 		user := controllers.UserService{}
 		users := v.Group("/user")
 		{
-			//users.POST("/create", controllers.UserService{}.Create)
-			//users.PUT("/update", controllers.UserService{}.Update)
-			//users.DELETE("/delete", controllers.UserService{}.DeleteById)
-			//users.GET("/search", controllers.UserService{}.GetBySearch)
+			users.POST("/create", user.Create)
+			users.PUT("/update", user.Update)
+			users.DELETE("/delete/:id", user.Delete)
+			users.GET("/search", user.GetBySearch)
 			users.GET("/id/:id", user.GetByID)
 		}
 	}
@@ -76,18 +75,5 @@ func CheckLogin() gin.HandlerFunc {
 				c.JSON(http.StatusOK, lib.MapNoAuth)
 			}
 		}
-
-		/*cookie,err := c.Request.Cookie("uid")
-		if err != nil{
-			fmt.Println("cookie-->uid不存在")
-		}
-		ss, _ := url.QueryUnescape(cookie.Value)
-		// 解密
-		uid, err := util.Decrypt([]byte(ss))
-		if err != nil {
-			fmt.Println("cookie解密失败: ", err)
-			c.Abort()
-			c.JSON(http.StatusOK, lib.MapNoToken)
-		}*/
 	}
 }
