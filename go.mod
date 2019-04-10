@@ -31,7 +31,7 @@ require (
 	github.com/dancannon/gorethink v4.0.0+incompatible // indirect
 	github.com/dimchansky/utfbom v1.1.0 // indirect
 	github.com/docker/go-connections v0.4.0 // indirect
-	github.com/dreamlu/deercoder-gin v1.2.2
+	github.com/dreamlu/deercoder-gin v1.2.4
 	github.com/dreamlu/go.uuid v1.2.0
 	github.com/duosecurity/duo_api_golang v0.0.0-20190308151101-6c680f768e74 // indirect
 	github.com/elazarl/go-bindata-assetfs v1.0.0 // indirect

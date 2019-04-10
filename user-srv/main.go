@@ -9,6 +9,7 @@ import (
 	"time"
 )
 
+
 func main() {
 
 	service := micro.NewService(
@@ -23,7 +24,10 @@ func main() {
 	service.Init()
 
 	// Register Handlers
+	// user register
 	_ = user.RegisterUserServiceHandler(service.Server(), new(controllers.UserService))
+	// login register
+	_ = user.RegisterLoginServiceHandler(service.Server(), new(controllers.LoginService))
 
 	// run server
 	if err := service.Run(); err != nil {

@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package user;
+
+// login model
+message LoginModel {
+    int64 id = 1;
+    string name = 2;
+    string password = 3;
+}
+
+// login service
+// rpc crud
+service LoginService {
+
+    // login
+    rpc Login (LoginModel) returns (LoginModel) {
+    }
+}

@@ -24,19 +24,21 @@ func init() {
 //根据id获得用户获取
 func (p *UserService) GetByID(u *gin.Context) {
 	id, _ := strconv.ParseInt(u.Param("id"), 10, 64)
-	response, err := UserClient.GetByID(context.TODO(), &user.ID{
+	res, err := UserClient.GetByID(context.TODO(), &user.ID{
 		Id: id,
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, err)
+		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
 	}
 
-	u.JSON(http.StatusOK, lib.GetInfoN{
-		Status: lib.CodeSuccess,
-		Msg:    lib.MsgSuccess,
-		Data:   response,
-	})
+	if res == nil {
+		u.JSON(http.StatusOK, lib.MapNoResult)
+		return
+	}
+
+	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
 }
 
 //用户信息分页
@@ -53,6 +55,7 @@ func (p *UserService) GetBySearch(u *gin.Context) {
 
 	if err != nil {
 		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
 	}
 
 	if res == nil {
@@ -74,6 +77,7 @@ func (p *UserService) Delete(u *gin.Context) {
 
 	if err != nil {
 		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
 	}
 
 	u.JSON(http.StatusOK, lib.MapUpdate)
@@ -93,6 +97,7 @@ func (p *UserService) Update(u *gin.Context) {
 
 	if err != nil {
 		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
 	}
 
 	u.JSON(http.StatusOK, lib.MapUpdate)
@@ -112,6 +117,7 @@ func (p *UserService) Create(u *gin.Context) {
 
 	if err != nil {
 		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
 	}
 
 	u.JSON(http.StatusOK, lib.MapCreate)

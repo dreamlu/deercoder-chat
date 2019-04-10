@@ -34,13 +34,15 @@ func SetRouter() *gin.Engine {
 	//组的路由,version
 	v1 := router.Group("/api/v1")
 	{
+		user := controllers.UserService{}
+		login := controllers.LoginService{}
 		v := v1
 		//用户登录
-		v.POST("/login/login", controllers.Login)
+		v.POST("/login/login", login.Login)
 		//文件上传
 		v.POST("/file/upload", file.UpoadFile)
 
-		user := controllers.UserService{}
+
 		users := v.Group("/user")
 		{
 			users.POST("/create", user.Create)

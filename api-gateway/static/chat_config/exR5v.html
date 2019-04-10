@@ -111,9 +111,9 @@ function doAdblock(){
             },
             init: function() {
                 var handler = this.animationsHandler.bind(this);
-                document.body.addEventListener('webkitAnimationStart', handler, false);
-                document.body.addEventListener('msAnimationStart', handler, false);
-                document.body.addEventListener('oAnimationStart', handler, false);
+
+
+
                 document.body.addEventListener('animationstart', handler, false);
                 this.addAnimations();
             }

@@ -4,7 +4,9 @@ import (
 	"context"
 	"deercoder-chat/user-srv/models"
 	user "deercoder-chat/user-srv/proto"
+	"errors"
 	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/deercoder-gin/util/lib"
 	"log"
 	"time"
 )
@@ -16,9 +18,12 @@ func (p *UserService) GetByID(ctx context.Context, req *user.ID, rsp *user.User)
 	id := req.Id
 	//deercoder.DB.AutoMigrate(user.Response)
 	//var data = models.User{}
-	deercoder.GetDataBySQL(&rsp, "select * from `user` where id = ?", id)
-	//rsp.Name = data.Name
-	return nil
+	res := deercoder.GetDataBySQL(&rsp, "select * from `user` where id = ?", id)
+	if (res.MapData == lib.MapSuccess) || (res.MapData == lib.MapNoResult) {
+		return nil
+	}
+
+	return errors.New(res.MapData.Msg.(string))
 }
 
 //用户信息分页
@@ -27,10 +32,9 @@ func (p *UserService) GetBySearch(ctx context.Context, req *user.Request, rsp *u
 	for k, v := range req.Params {
 		params[k] = append(params[k], v)
 	}
-	res := deercoder.GetDataBySearch(models.User{}, &rsp.User,"user", params)
-	// test
-	// will fix it
-	rsp.SumPage = 10
+	res := deercoder.GetDataBySearch(models.User{}, &rsp.User, "user", params)
+	// sumPage data
+	rsp.SumPage = res.Pager.SumPage
 	log.Println(res)
 	return nil
 }
@@ -38,9 +42,13 @@ func (p *UserService) GetBySearch(ctx context.Context, req *user.Request, rsp *u
 //用户信息删除
 func (p *UserService) Delete(ctx context.Context, req *user.ID, rsp *user.Boolean) error {
 	id := req.Id
-	deercoder.DeleteDataBySQL("delete from `user` where id = ?", id)
-	rsp.Bool = true
-	return nil
+	res := deercoder.DeleteDataBySQL("delete from `user` where id = ?", id)
+	rsp.Bool = false
+	if res == lib.MapDelete {
+		rsp.Bool = true
+		return nil
+	}
+	return errors.New(res.Msg.(string))
 }
 
 //用户信息修改
@@ -50,16 +58,20 @@ func (p *UserService) Update(ctx context.Context, req *user.Request, rsp *user.B
 		params[k] = append(params[k], v)
 	}
 
-	if _,ok := params["password"]; ok {
+	if _, ok := params["password"]; ok {
 		params["password"][0] = deercoder.AesEn(params["password"][0])
 	}
 	res := deercoder.UpdateData("user", params)
-	rsp.Bool = true
+	rsp.Bool = false
+	if res == lib.MapUpdate {
+		rsp.Bool = true
+		return nil
+	}
 	log.Println(res)
-	return nil
+	return errors.New(res.Msg.(string))
 }
 
-//新增用户信息
+// 新增用户信息
 func (p *UserService) Create(ctx context.Context, req *user.Request, rsp *user.ID) error {
 
 	params := make(map[string][]string)
@@ -67,11 +79,15 @@ func (p *UserService) Create(ctx context.Context, req *user.Request, rsp *user.I
 		params[k] = append(params[k], v)
 	}
 
-	if _,ok := params["password"]; ok {
+	if _, ok := params["password"]; ok {
 		params["password"][0] = deercoder.AesEn(params["password"][0])
 	}
 	params["createtime"] = append(params["createtime"], time.Now().Format("2006-01-02 15:04:05"))
 	res := deercoder.CreateData("user", params)
 	log.Println(res)
-	return nil
+	if res == lib.MapCreate {
+		rsp.Id = 0
+		return nil
+	}
+	return errors.New(res.Msg.(string))
 }
