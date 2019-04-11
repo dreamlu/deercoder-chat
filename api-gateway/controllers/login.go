@@ -31,6 +31,12 @@ func (p *LoginService) Login(u *gin.Context) {
 	})
 
 	if err != nil {
+
+		if err.Error() == lib.MsgCountErr {
+			u.JSON(http.StatusOK, lib.MapNoCount)
+			return
+		}
+
 		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
 		return
 	}

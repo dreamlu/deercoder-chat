@@ -17,11 +17,11 @@ type Message struct {
 	Headimg     string             `json:"headimg"`      //头像
 	Name        string             `json:"username"`     //用户名
 	Content     string             `json:"content"`      //消息内容
-	ContentType string             `json:"content_type"` //前台用
+	ContentType string             `json:"content_type"` //消息类型,0文字,1图片,2....
 	CreateTime  deercoder.JsonTime `json:"create_time"`  //创建时间
 }
 
-/*群聊发送模型*/
+// 群聊发送模型
 type GroupMsg struct {
 	ID         int64              `json:"id"`
 	GroupID    string             `json:"group_id"`    //群聊id
@@ -30,7 +30,7 @@ type GroupMsg struct {
 	CreateTime deercoder.JsonTime `json:"create_time"` //创建时间
 }
 
-/*群聊最后记录*/
+// 群聊最后记录
 type GroupLastMsg struct {
 	ID             int64  `json:"id"`
 	GroupID        string `json:"group_id"` //群聊id
@@ -38,7 +38,7 @@ type GroupLastMsg struct {
 	LastGroupMsgId int64  `json:"last_group_msg_id"`
 }
 
-/*群组id极其成员id*/
+// 群组id极其成员id
 type GroupUsers struct {
 	ID      int64  `json:"id"`
 	GroupId string `json:"group_id"`
@@ -50,8 +50,9 @@ type GroupUsers struct {
 //
 //}
 
-//建立群组,未来扩展
-//返回群组id
+// 添加好友
+// 建立群组,未来扩展
+// 返回群组id
 func DistributeGroup(uids string) (groupId string, err error) {
 
 	if uids == "" {
@@ -61,7 +62,7 @@ func DistributeGroup(uids string) (groupId string, err error) {
 	userids := strings.Split(uids, ",")
 	//唯一群id
 	groupId = uuid.NewV1().String()
-	sql := "insert `group_users`(group_id,uid) value"
+	sql := "insert `group_users`(group_id, uid) value"
 	for _, v := range userids {
 		if v == "" {
 			continue
@@ -80,11 +81,12 @@ func DistributeGroup(uids string) (groupId string, err error) {
 	return groupId, nil
 }
 
-//群聊消息,创建
+// 聊天记录
+// 群聊消息,创建
 func CreateGroupMsg(uuid, group_id string, from_uid int64, content, content_type string) (err error) {
 
 	//需要id,用来每次聊天生成的id作为聊天记录id,以便群离线消息记录该id
-	sql := "insert `group_msg`(uuid,group_id,content,from_uid, content_type) value(?,?,?,?,?)"
+	sql := "insert `group_msg`(uuid, group_id, content, from_uid, content_type) value(?,?,?,?,?)"
 	dba := deercoder.DB.Exec(sql, uuid, group_id, content, from_uid, content_type)
 
 	if dba.Error != nil {
@@ -93,8 +95,8 @@ func CreateGroupMsg(uuid, group_id string, from_uid int64, content, content_type
 	return nil
 }
 
-//群离线消息记录
-//记录用户离线时,最后显示的消息id
+// 群离线消息记录
+// 记录用户离线时,最后显示的消息id
 func CreateGroupLastMsg(group_id string, uid int64, last_group_msg_uuid string) (err error) {
 	if group_id == "" {
 		return errors.New("用户gid不存在")
@@ -108,13 +110,12 @@ func CreateGroupLastMsg(group_id string, uid int64, last_group_msg_uuid string) 
 	return nil
 }
 
-//拉取群聊消息(所有)
+// 拉取群聊消息(所有)
+// 待优化
 func GetAllGroupMsg(group_id int64) ([]Message, error) {
 
 	//拉取该群聊的所有消息
-	sql := `select *
-	from group_msg
-	where group_id=?`
+	sql := fmt.Sprintf("select %s from group_msg where group_id=?", deercoder.GetColSql(GroupMsg{}))
 
 	var msg []Message
 
@@ -124,7 +125,7 @@ func GetAllGroupMsg(group_id int64) ([]Message, error) {
 
 		return msg, errors.New("暂无离线消息")
 	}
-	sql = "select name,headimg from `user` where id = ?"
+	sql = "select name, headimg from `user` where id = ?"
 	for k, v := range msg { //查询对应的头像,用户名等信息
 
 		deercoder.DB.Raw(sql, v.FromUid).Scan(&msg[k])
@@ -133,7 +134,7 @@ func GetAllGroupMsg(group_id int64) ([]Message, error) {
 	return msg, nil
 }
 
-//拉取用户离线消息
+// 拉取用户离线消息
 func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
 
 	//1.找出群聊group_id中对应的最小的未读记录id
@@ -145,9 +146,7 @@ func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
 		return nil, errors.New("暂无离线消息")
 	}
 	//2.拉取离线后的该群聊的所有消息
-	sql := `select *
-	from group_msg
-	where group_id=? and id >= (select id from group_msg where uuid = ?)`
+	sql := fmt.Sprintf("select %s from group_msg where group_id=? and id >= (select id from group_msg where uuid = ?)", deercoder.GetColSql(GroupMsg{}))
 
 	var msg []Message
 
@@ -157,7 +156,7 @@ func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
 
 		return msg, errors.New("暂无离线消息")
 	}
-	sql = "select name,headimg from `user` where id = ?"
+	sql = "select name, headimg from `user` where id = ?"
 	for k, v := range msg { //查询对应的头像,用户名等信息
 
 		deercoder.DB.Raw(sql, v.FromUid).Scan(&msg[k])
@@ -166,7 +165,7 @@ func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
 	return msg, nil
 }
 
-//已读消息
+// 已读消息
 func ReadGroupLastMsg(group_id, uid int64) interface{} {
 
 	var info interface{}
@@ -215,7 +214,7 @@ func MassMessage(group_ids, send_uids, from_uid, content string) interface{} {
 	return lib.MapCreate
 }
 
-//查找群聊中所有用户
+// 查找群聊中所有用户
 func GetChatUsers(group_id string) []GroupUsers {
 
 	var gusers []GroupUsers

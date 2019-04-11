@@ -1,7 +1,7 @@
 package chat
 
 import (
-	"deercoder-chat/user-srv"
+	"deercoder-chat/chat-srv/models/chat"
 	"fmt"
 	"github.com/dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
@@ -18,7 +18,7 @@ type Client struct {
 
 var clients []*Client //客户端队列,指针同步同一个client data
 //var clients = make(map[*websocket.Conn]bool) // connected clients
-var broadcast = make(chan main.Message) // broadcast channel
+var broadcast = make(chan chat.Message) // broadcast channel
 
 // Configure the upgrader
 var upgrader = websocket.Upgrader{
@@ -47,7 +47,7 @@ func WsHander(w http.ResponseWriter, r *http.Request) {
 
 	//消息读取,每个客户端数据
 	for {
-		var msg main.Message
+		var msg chat.Message
 		// Read in a new message as JSON and map it to a Message object
 		err := ws.ReadJSON(&msg)
 		fmt.Println("聊天测试", msg)
@@ -76,7 +76,7 @@ func WsHander(w http.ResponseWriter, r *http.Request) {
 		broadcast <- msg
 
 		//send broadcast, then save the message
-		main.CreateGroupMsg(msg.UUID, msg.GroupId, msg.FromUid, msg.Content, msg.ContentType)
+		_ = chat.CreateGroupMsg(msg.UUID, msg.GroupId, msg.FromUid, msg.Content, msg.ContentType)
 	}
 }
 
@@ -104,7 +104,7 @@ func handleMessages() {
 		}
 		//连接该断的也断了
 		//进行用户在线检测
-		gusers := main.GetChatUsers(msg.GroupId)
+		gusers := chat.GetChatUsers(msg.GroupId)
 	into:for _, v2 := range clients {
 		if v2.GroupID == msg.GroupId { //在线用户
 			for k,v := range gusers {
@@ -115,10 +115,10 @@ func handleMessages() {
 			}
 		}
 	}
-		//剩下的为群聊离线用户
-		//记录离线消息
+		// 剩下的为群聊离线用户
+		// 记录离线消息
 		for _, v := range gusers{
-			main.CreateGroupLastMsg(msg.GroupId,v.Uid, msg.UUID)
+			_ = chat.CreateGroupLastMsg(msg.GroupId, v.Uid, msg.UUID)
 		}
 	}
 }
