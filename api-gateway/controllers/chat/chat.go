@@ -9,7 +9,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -24,25 +23,6 @@ func init() {
 	// New RPC client
 	rpcClient := client.NewClient(client.RequestTimeout(time.Second * 120))
 	cli = proto.NewStreamerService("deercoder-chat.chat", rpcClient)
-}
-
-func serveHome(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL)
-	if !strings.Contains(r.URL.Path, "/chat") {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	http.ServeFile(w, r, "static/html/chat/index.html")
-}
-
-//聊天
-func Chat(u *gin.Context) {
-
-	serveHome(u.Writer, u.Request)
 }
 
 //聊天ws

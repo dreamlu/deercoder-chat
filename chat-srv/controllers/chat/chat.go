@@ -9,19 +9,15 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 )
-
 
 type Streamer struct{}
 
 // Server side stream
 func (e *Streamer) ServerStream(ctx context.Context, req *proto.Request, stream proto.Streamer_ServerStreamStream) error {
-	log.Printf("Got msg %v", req.Count)
-	for i := 0; i < int(req.Count); i++ {
-		if err := stream.Send(&proto.Response{Count: int64(i)}); err != nil {
-			return err
-		}
+	log.Printf("[Chat-srv]: Got msg %v", req.Message)
+	if err := stream.Send(&proto.Response{Message: req.Message}); err != nil {
+		return err
 	}
 	return nil
 }
@@ -33,31 +29,31 @@ func (e *Streamer) Stream(ctx context.Context, stream proto.Streamer_StreamStrea
 		if err != nil {
 			return err
 		}
-		log.Printf("Got msg %v", req.Count)
-		if err := stream.Send(&proto.Response{Count: req.Count}); err != nil {
+		log.Printf("[Chat-srv]:Got msg %v", req.Message)
+		if err := stream.Send(&proto.Response{Message: req.Message}); err != nil {
 			return err
 		}
 	}
 }
 
-func serveHome(w http.ResponseWriter, r *http.Request) {
-	log.Println(r.URL)
-	if !strings.Contains(r.URL.Path, "/chat") {
-		http.Error(w, "Not found", http.StatusNotFound)
-		return
-	}
-	if r.Method != "GET" {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-	http.ServeFile(w, r, "static/html/chat/index.html")
-}
-
-//聊天
-func Chat(u *gin.Context) {
-
-	serveHome(u.Writer, u.Request)
-}
+//func serveHome(w http.ResponseWriter, r *http.Request) {
+//	log.Println(r.URL)
+//	if !strings.Contains(r.URL.Path, "/chat") {
+//		http.Error(w, "Not found", http.StatusNotFound)
+//		return
+//	}
+//	if r.Method != "GET" {
+//		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+//		return
+//	}
+//	http.ServeFile(w, r, "static/html/chat/index.html")
+//}
+//
+////聊天
+//func Chat(u *gin.Context) {
+//
+//	serveHome(u.Writer, u.Request)
+//}
 
 //聊天ws
 func ChatWS(u *gin.Context) {

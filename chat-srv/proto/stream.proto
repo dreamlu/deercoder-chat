@@ -8,9 +8,22 @@ service Streamer {
 }
 
 message Request {
-    int64 count = 1;
+    Message message = 1;
 }
 
 message Response {
-    int64 count = 1;
+    Message message = 1;
+}
+
+// message model
+message Message {
+
+    string uuid = 1;
+    string group_id = 2;
+    int64 from_uid = 3;
+    string headimg = 4;
+    string username = 5;
+    string content = 6;
+    string content_type = 7;
+    string create_time = 8;
 }

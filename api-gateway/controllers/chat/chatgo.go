@@ -3,7 +3,6 @@ package chat
 import (
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
-	"fmt"
 	"github.com/dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
 	"log"
@@ -19,7 +18,7 @@ type Client struct {
 
 var clients []*Client //客户端队列,指针同步同一个client data
 //var clients = make(map[*websocket.Conn]bool) // connected clients
-var broadcast = make(chan chat.Message) // broadcast channel
+var broadcast = make(chan *proto.Message) // broadcast channel
 
 // Configure the upgrader
 var upgrader = websocket.Upgrader{
@@ -28,18 +27,13 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-//开启不同进程代表对应的客户端通信
+// 消息读取
+// 开启不同进程代表对应的客户端通信
 func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
-	// Upgrade initial GET request to a websocket
-	//ws, err := upgrader.Upgrade(w, r, nil)
-	//if err != nil {
-	//	log.Fatal(err)
-	//}
-	// Make sure we close the connection when the function returns
+
 	defer ws.Close()
 
 	// Register our new client
-	//clients[ws] = true
 	//注册客户端连接
 	var ct Client
 	ct.Conn = ws
@@ -48,40 +42,38 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 
 	//消息读取,每个客户端数据
 	for {
-		var msg chat.Message
+		var req proto.Request
+		// var msg chat.Message
 		// Read in a new message as JSON and map it to a Message object
-		err := ws.ReadJSON(&msg)
-		fmt.Println("聊天测试", msg)
+		err := ws.ReadJSON(&req.Message)
+
 		if err != nil {
-			log.Printf("error: %v", err)
+			log.Printf("[错误]: %v", err)
 			//delete(clients, ws) //删除对应连接
 			for _, v := range clients { //删除对应连接,emm...暂时先遍历删除～
 				//fmt.Println(v)
 				if v.Conn == ws {
-					////fmt.Println("删除,用户gid:",ct.GroupID)
-					//clients = append(clients[:k], clients[k+1:]...)//交给广播处理
-					//
-					////记录该用户最后读的消息id,用户进程中处理,这里gid已经为0
-					//chat.CreateGroupLastMsg(msg.GroupId, msg.FromUid, msg.Flag, msg.ID)
 					break
 				}
 			}
 			break
 		}
-		//fmt.Println(msg)
-		msg.UUID = uuid.NewV1().String()
-		ct.GroupID = msg.GroupId //客户端唯一标识
-		ct.UID = msg.FromUid
-		//fmt.Println("用户flag",msg.Flag)
-		// Send the newly received message to the broadcast channel
-		broadcast <- msg
+		log.Println("聊天测试: ", req.Message)
 
-		//send broadcast, then save the message
-		_ = chat.CreateGroupMsg(msg.UUID, msg.GroupId, msg.FromUid, msg.Content, msg.ContentType)
+		//
+		req.Message.Uuid = uuid.NewV1().String()
+		ct.GroupID = req.Message.GroupId //客户端唯一标识
+		ct.UID = req.Message.FromUid
+		// Send the newly received message to the broadcast channel
+		broadcast <- req.Message
+
+		// send broadcast, then save the message
+		_ = chat.CreateGroupMsg(req.Message.Uuid, req.Message.GroupId, req.Message.FromUid, req.Message.Content, req.Message.ContentType)
 	}
 }
 
-//消息写入,消息推送(不通进程代表各自客户端的写入进程)
+// 消息写入
+// 消息推送(不通进程代表各自客户端的写入进程)
 func handleMessages() {
 	for {
 		msg := <-broadcast //广播
