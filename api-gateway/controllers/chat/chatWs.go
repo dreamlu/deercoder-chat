@@ -1,7 +1,7 @@
 package chat
 
 import (
-	"deercoder-chat/chat-srv/models/chat"
+	"context"
 	"deercoder-chat/chat-srv/proto"
 	"github.com/dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
@@ -12,7 +12,7 @@ import (
 //客户端
 type Client struct {
 	GroupID string //标识客户端
-	UID     int64	//结合flag，唯一标识用户id
+	UID     int64  //结合flag，唯一标识用户id
 	Conn    *websocket.Conn
 }
 
@@ -58,7 +58,7 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 			}
 			break
 		}
-		log.Println("聊天测试: ", req.Message)
+		log.Println("[聊天测试]: ", req.Message)
 
 		//
 		req.Message.Uuid = uuid.NewV1().String()
@@ -68,7 +68,24 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		broadcast <- req.Message
 
 		// send broadcast, then save the message
-		_ = chat.CreateGroupMsg(req.Message.Uuid, req.Message.GroupId, req.Message.FromUid, req.Message.Content, req.Message.ContentType)
+		//_ = chat.CreateGroupMsg(req.Message.Uuid, req.Message.GroupId, req.Message.FromUid, req.Message.Content, req.Message.ContentType)
+		// use go-micro stream deal with the emessage
+		// Send request to stream server
+		stream, err := cli.ServerStream(context.Background(), &req)
+		if err != nil {
+			log.Println("[错误]: " + err.Error())
+		}
+		defer stream.Close()
+
+		// Read from stream, end request once the stream is closed
+		//rsp, err := stream.Recv()
+		//if err != nil {
+		//	if err != io.EOF {
+		//		return err
+		//	}
+		//
+		//	break
+		//}
 	}
 }
 
@@ -97,21 +114,22 @@ func handleMessages() {
 		}
 		//连接该断的也断了
 		//进行用户在线检测
-		gusers := chat.GetChatUsers(msg.GroupId)
-	into:for _, v2 := range clients {
-		if v2.GroupID == msg.GroupId { //在线用户
-			for k,v := range gusers {
-				if v2.UID == v.Uid {
-					gusers = append(gusers[:k], gusers[k+1:]...) //去除在线用户
-					goto into
-				}
-			}
-		}
-	}
+	//	gusers := chat.GetChatUsers(msg.GroupId)
+	//into:
+	//	for _, v2 := range clients {
+	//		if v2.GroupID == msg.GroupId { //在线用户
+	//			for k, v := range gusers {
+	//				if v2.UID == v.Uid {
+	//					gusers = append(gusers[:k], gusers[k+1:]...) //去除在线用户
+	//					goto into
+	//				}
+	//			}
+	//		}
+	//	}
 		// 剩下的为群聊离线用户
 		// 记录离线消息
-		for _, v := range gusers{
-			_ = chat.CreateGroupLastMsg(msg.GroupId, v.Uid, msg.UUID)
-		}
+		//for _, v := range gusers{
+		//	_ = chat.CreateGroupLastMsg(msg.GroupId, v.Uid, msg.Uuid)
+		//}
 	}
 }

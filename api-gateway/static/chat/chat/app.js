@@ -13,7 +13,7 @@ new Vue({
 
     created: function() {
         var self = this;
-        this.ws = new WebSocket('ws://' + window.location.host + '/api/v1/chat/ws');
+        this.ws = new WebSocket('ws://' + window.location.host + '/api/v1/chat/chatWs');
         this.ws.addEventListener('message', function(e) {
             var msg = JSON.parse(e.data);
             self.chatContent += '<div class="chip">'
@@ -37,7 +37,7 @@ new Vue({
                         headimg:"static/file/xxx.img",
                         content: $('<p>').html(this.newMsg).text(), // Strip out html
                         //测试
-                        group_id: 32165165561112112,//group_id,
+                        group_id: "32165165561112112",//group_id,
                         from_uid:1,
                         flag: 0, //0老师,1学生,
                         time:"2018-01-01"

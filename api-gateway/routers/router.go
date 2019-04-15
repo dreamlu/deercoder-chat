@@ -2,6 +2,7 @@ package routers
 
 import (
 	"deercoder-chat/api-gateway/controllers"
+	"deercoder-chat/api-gateway/controllers/chat"
 	"github.com/dreamlu/deercoder-gin"
 	"github.com/dreamlu/deercoder-gin/util/file"
 	"github.com/dreamlu/deercoder-gin/util/lib"
@@ -42,7 +43,14 @@ func SetRouter() *gin.Engine {
 		//文件上传
 		v.POST("/file/upload", file.UpoadFile)
 
+		// 聊天服务
+		chats := v.Group("/chat")
+		{
+			// websocket get request
+			chats.GET("/chatWs", chat.ChatWS)
+		}
 
+		// 用户服务
 		users := v.Group("/user")
 		{
 			users.POST("/create", user.Create)

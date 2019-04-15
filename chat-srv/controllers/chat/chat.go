@@ -25,6 +25,7 @@ func (e *Streamer) ServerStream(ctx context.Context, req *proto.Request, stream 
 // Bidirectional stream
 func (e *Streamer) Stream(ctx context.Context, stream proto.Streamer_StreamStream) error {
 	for {
+		// Read from stream
 		req, err := stream.Recv()
 		if err != nil {
 			return err
@@ -36,33 +37,10 @@ func (e *Streamer) Stream(ctx context.Context, stream proto.Streamer_StreamStrea
 	}
 }
 
-//func serveHome(w http.ResponseWriter, r *http.Request) {
-//	log.Println(r.URL)
-//	if !strings.Contains(r.URL.Path, "/chat") {
-//		http.Error(w, "Not found", http.StatusNotFound)
-//		return
-//	}
-//	if r.Method != "GET" {
-//		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-//		return
-//	}
-//	http.ServeFile(w, r, "static/html/chat/index.html")
-//}
-//
-////聊天
-//func Chat(u *gin.Context) {
-//
-//	serveHome(u.Writer, u.Request)
-//}
+//========================================================================
+//========================================================================
 
-//聊天ws
-func ChatWS(u *gin.Context) {
-
-	go handleMessages()
-	WsHander(u.Writer, u.Request)
-}
-
-//创建群聊
+// 创建群聊
 func DistributeGroup(u *gin.Context) {
 	uids := u.PostForm("uids")
 	gid, _ := chat.DistributeGroup(uids)
@@ -73,7 +51,7 @@ func DistributeGroup(u *gin.Context) {
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(map[string]interface{}{"group_id": gid}))
 }
 
-//拉取群聊所有消息
+// 拉取群聊所有消息
 func GetAllGroupMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
 
@@ -85,7 +63,7 @@ func GetAllGroupMsg(u *gin.Context) {
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(msg))
 }
 
-//拉取离线信息
+// 拉取离线信息
 func GetGroupLastMsg(u *gin.Context) {
 	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
 	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)

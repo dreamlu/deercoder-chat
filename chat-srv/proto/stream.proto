@@ -27,3 +27,20 @@ message Message {
     string content_type = 7;
     string create_time = 8;
 }
+
+
+// rpc service
+service ChatService {
+
+    // 创建群聊/好友
+    rpc DistributeGroup(Request) returns (Response) {}
+
+    // 拉取群聊所有消息
+    rpc GetAllGroupMsg(Request) returns (Response) {}
+
+    // 拉取离线信息
+    rpc GetGroupLastMsg(Request) returns (Response) {}
+
+    // 已读离线信息
+    rpc ReadGroupLastMsg(Request) returns (Response) {}
+}
