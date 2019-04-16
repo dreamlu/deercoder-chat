@@ -243,3 +243,121 @@ func (x *streamerServerStreamStream) RecvMsg(m interface{}) error {
 func (x *streamerServerStreamStream) Send(m *Response) error {
 	return x.stream.Send(m)
 }
+
+// Client API for ChatService service
+
+type ChatService interface {
+	// 创建群聊/好友
+	DistributeGroup(ctx context.Context, in *UidS, opts ...client.CallOption) (*Response, error)
+	// 拉取群聊所有消息
+	GetAllGroupMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*ArrayMessage, error)
+	// 拉取离线信息
+	GetGroupLastMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*ArrayMessage, error)
+	// 已读离线信息
+	ReadGroupLastMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+}
+
+type chatService struct {
+	c    client.Client
+	name string
+}
+
+func NewChatService(name string, c client.Client) ChatService {
+	if c == nil {
+		c = client.NewClient()
+	}
+	if len(name) == 0 {
+		name = "proto"
+	}
+	return &chatService{
+		c:    c,
+		name: name,
+	}
+}
+
+func (c *chatService) DistributeGroup(ctx context.Context, in *UidS, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "ChatService.DistributeGroup", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatService) GetAllGroupMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*ArrayMessage, error) {
+	req := c.c.NewRequest(c.name, "ChatService.GetAllGroupMsg", in)
+	out := new(ArrayMessage)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatService) GetGroupLastMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*ArrayMessage, error) {
+	req := c.c.NewRequest(c.name, "ChatService.GetGroupLastMsg", in)
+	out := new(ArrayMessage)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatService) ReadGroupLastMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "ChatService.ReadGroupLastMsg", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for ChatService service
+
+type ChatServiceHandler interface {
+	// 创建群聊/好友
+	DistributeGroup(context.Context, *UidS, *Response) error
+	// 拉取群聊所有消息
+	GetAllGroupMsg(context.Context, *Request, *ArrayMessage) error
+	// 拉取离线信息
+	GetGroupLastMsg(context.Context, *Request, *ArrayMessage) error
+	// 已读离线信息
+	ReadGroupLastMsg(context.Context, *Request, *Response) error
+}
+
+func RegisterChatServiceHandler(s server.Server, hdlr ChatServiceHandler, opts ...server.HandlerOption) error {
+	type chatService interface {
+		DistributeGroup(ctx context.Context, in *UidS, out *Response) error
+		GetAllGroupMsg(ctx context.Context, in *Request, out *ArrayMessage) error
+		GetGroupLastMsg(ctx context.Context, in *Request, out *ArrayMessage) error
+		ReadGroupLastMsg(ctx context.Context, in *Request, out *Response) error
+	}
+	type ChatService struct {
+		chatService
+	}
+	h := &chatServiceHandler{hdlr}
+	return s.Handle(s.NewHandler(&ChatService{h}, opts...))
+}
+
+type chatServiceHandler struct {
+	ChatServiceHandler
+}
+
+func (h *chatServiceHandler) DistributeGroup(ctx context.Context, in *UidS, out *Response) error {
+	return h.ChatServiceHandler.DistributeGroup(ctx, in, out)
+}
+
+func (h *chatServiceHandler) GetAllGroupMsg(ctx context.Context, in *Request, out *ArrayMessage) error {
+	return h.ChatServiceHandler.GetAllGroupMsg(ctx, in, out)
+}
+
+func (h *chatServiceHandler) GetGroupLastMsg(ctx context.Context, in *Request, out *ArrayMessage) error {
+	return h.ChatServiceHandler.GetGroupLastMsg(ctx, in, out)
+}
+
+func (h *chatServiceHandler) ReadGroupLastMsg(ctx context.Context, in *Request, out *Response) error {
+	return h.ChatServiceHandler.ReadGroupLastMsg(ctx, in, out)
+}

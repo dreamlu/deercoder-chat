@@ -1,6 +1,7 @@
 package chat
 
 import (
+	"deercoder-chat/chat-srv/proto"
 	"errors"
 	"fmt"
 	"github.com/dreamlu/deercoder-gin"
@@ -112,16 +113,16 @@ func CreateGroupLastMsg(group_id string, uid int64, last_group_msg_uuid string) 
 
 // 拉取群聊消息(所有)
 // 待优化
-func GetAllGroupMsg(group_id int64) ([]Message, error) {
+func GetAllGroupMsg(group_id string) ([]*proto.Message, error) {
 
 	//拉取该群聊的所有消息
 	sql := fmt.Sprintf("select %s from group_msg where group_id=?", deercoder.GetColSql(GroupMsg{}))
 
-	var msg []Message
+	var msg []*proto.Message
 
-	deercoder.DB.Raw(sql, group_id).Scan(&msg)
+	deercoder.DB.Raw(sql, group_id).Scan(msg)
 
-	if len(msg) == 0 {
+	if msg[0].GroupId == "" {
 
 		return msg, errors.New("暂无离线消息")
 	}
@@ -135,7 +136,7 @@ func GetAllGroupMsg(group_id int64) ([]Message, error) {
 }
 
 // 拉取用户离线消息
-func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
+func GetGroupLastMsg(group_id string, uid int64) ([]*proto.Message, error) {
 
 	//1.找出群聊group_id中对应的最小的未读记录id
 	var value deercoder.Value
@@ -148,7 +149,7 @@ func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
 	//2.拉取离线后的该群聊的所有消息
 	sql := fmt.Sprintf("select %s from group_msg where group_id=? and id >= (select id from group_msg where uuid = ?)", deercoder.GetColSql(GroupMsg{}))
 
-	var msg []Message
+	var msg []*proto.Message
 
 	deercoder.DB.Raw(sql, group_id, value.Value).Scan(&msg)
 
@@ -166,20 +167,19 @@ func GetGroupLastMsg(group_id, uid int64) ([]Message, error) {
 }
 
 // 已读消息
-func ReadGroupLastMsg(group_id, uid int64) interface{} {
+func ReadGroupLastMsg(group_id string, uid int64) (lib.MapData, error) {
 
-	var info interface{}
+	var info lib.MapData
 	sql2 := "update `group_last_msg` set is_read=1 where is_read=0 and group_id=? and uid=?"
 	dba := deercoder.DB.Exec(sql2, group_id, uid)
 	num := dba.RowsAffected
 	if dba.Error != nil {
-		info = lib.GetSqlError(dba.Error.Error())
+		return info, dba.Error
 	} else if num == 0 && dba.Error == nil {
-		info = lib.MapExistOrNo
+		return lib.MapNoResult, errors.New(lib.MsgNoResult)
 	} else {
-		info = lib.MapUpdate
+		return lib.MapUpdate, nil
 	}
-	return info
 }
 
 // 群发消息,对方默认未读

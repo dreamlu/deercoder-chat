@@ -22,6 +22,7 @@ func main() {
 
 	// Register Handler
 	_ = proto.RegisterStreamerHandler(service.Server(), new(chat.Streamer))
+	_ = proto.RegisterChatServiceHandler(service.Server(), new(chat.ChatService))
 
 	// Run service
 	if err := service.Run(); err != nil {

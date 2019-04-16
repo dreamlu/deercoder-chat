@@ -48,6 +48,12 @@ func SetRouter() *gin.Engine {
 		{
 			// websocket get request
 			chats.GET("/chatWs", chat.ChatWS)
+
+			// chat message
+			chats.POST("/disGroup", chat.DistributeGroup)
+			chats.GET("/allMsg", chat.GetAllGroupMsg)
+			chats.GET("/lastMsg", chat.GetGroupLastMsg)
+			chats.POST("/readLastMsg", chat.ReadGroupLastMsg)
 		}
 
 		// 用户服务

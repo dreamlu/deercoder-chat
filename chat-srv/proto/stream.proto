@@ -28,18 +28,32 @@ message Message {
     string create_time = 8;
 }
 
+// uids
+message UidS {
+    string uids = 1;
+}
+
+// true/false
+message Boolean {
+    bool bool = 1;
+}
+
+// message array
+message ArrayMessage {
+    repeated Message message = 1;
+}
 
 // rpc service
 service ChatService {
 
     // 创建群聊/好友
-    rpc DistributeGroup(Request) returns (Response) {}
+    rpc DistributeGroup(UidS) returns (Response) {}
 
     // 拉取群聊所有消息
-    rpc GetAllGroupMsg(Request) returns (Response) {}
+    rpc GetAllGroupMsg(Request) returns (ArrayMessage) {}
 
     // 拉取离线信息
-    rpc GetGroupLastMsg(Request) returns (Response) {}
+    rpc GetGroupLastMsg(Request) returns (ArrayMessage) {}
 
     // 已读离线信息
     rpc ReadGroupLastMsg(Request) returns (Response) {}

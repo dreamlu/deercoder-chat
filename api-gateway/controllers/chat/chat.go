@@ -1,6 +1,8 @@
 package chat
 
 import (
+	"context"
+	"deercoder-chat/api-gateway/conf"
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
 	"github.com/dreamlu/deercoder-gin/util/lib"
@@ -11,7 +13,6 @@ import (
 	"strconv"
 	"time"
 )
-
 
 //type Streamer struct{}
 //
@@ -37,49 +38,92 @@ func ChatWS(u *gin.Context) {
 	WsHander(cli, ws)
 }
 
-//创建群聊
+// chat service
+
+var (
+	chatClient proto.ChatService
+)
+
+func init() {
+	chatClient = proto.NewChatService(conf.ChatSrv, client.DefaultClient)
+}
+
+// 创建群聊/好友
 func DistributeGroup(u *gin.Context) {
+
 	uids := u.PostForm("uids")
-	gid, _ := chat.DistributeGroup(uids)
-	if gid == "" {
-		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeChat, "群聊创建失败"))
-		return
-	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(map[string]interface{}{"group_id": gid}))
-}
 
-//拉取群聊所有消息
-func GetAllGroupMsg(u *gin.Context) {
-	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
+	// rpc service
+	res, err := chatClient.DistributeGroup(context.TODO(), &proto.UidS{
+		Uids: uids,
+	})
 
-	msg, err := chat.GetAllGroupMsg(group_id)
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeError, err.Error()))
+		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
 		return
 	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(msg))
+
+	u.JSON(http.StatusOK, lib.GetMapDataSuccess(map[string]interface{}{"group_id": res.Message.GroupId}))
 }
 
-//拉取离线信息
+// 拉取群聊所有消息
+func GetAllGroupMsg(u *gin.Context) {
+	group_id := u.Query("group_id")
+
+	// rpc service
+	res, err := chatClient.GetAllGroupMsg(context.TODO(), &proto.Request{
+		Message: &proto.Message{
+			GroupId: group_id,
+		},
+	})
+
+	if err != nil {
+		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
+	}
+
+	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res.Message))
+}
+
+// 拉取离线信息
 func GetGroupLastMsg(u *gin.Context) {
-	group_id, _ := strconv.ParseInt(u.Query("group_id"), 10, 64)
+	group_id := u.Query("group_id")
 	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
 
-	msg, err := chat.GetGroupLastMsg(group_id, uid)
+	// rpc service
+	res, err := chatClient.GetGroupLastMsg(context.TODO(), &proto.Request{
+		Message: &proto.Message{
+			GroupId: group_id,
+			FromUid: uid,
+		},
+	})
+
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapData(lib.CodeError, err.Error()))
+		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
 		return
 	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(msg))
+
+	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
 }
 
 // 已读离线信息
 func ReadGroupLastMsg(u *gin.Context) {
-	group_id, _ := strconv.ParseInt(u.PostForm("group_id"), 10, 64)
+	group_id := u.PostForm("group_id")
 	uid, _ := strconv.ParseInt(u.PostForm("uid"), 10, 64)
 
-	ss := chat.ReadGroupLastMsg(group_id, uid)
-	u.JSON(http.StatusOK, ss)
+	// rpc service
+	res, err := chatClient.ReadGroupLastMsg(context.TODO(), &proto.Request{
+		Message: &proto.Message{
+			GroupId: group_id,
+			FromUid: uid,
+		},
+	})
+
+	if err != nil {
+		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
+	}
+	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
 }
 
 // 群发消息
