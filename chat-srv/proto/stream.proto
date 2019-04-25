@@ -2,9 +2,14 @@ syntax = "proto3";
 
 package proto;
 
+//option go_package = "deercoder-chat/user-srv";
+import "deercoder-chat/user-srv/proto/user.proto";
+
 service Streamer {
-    rpc Stream(stream Request) returns (stream Response) {}
-    rpc ServerStream(Request) returns (stream Response) {}
+    rpc Stream (stream Request) returns (stream Response) {
+    }
+    rpc ServerStream (Request) returns (stream Response) {
+    }
 }
 
 message Request {
@@ -43,18 +48,53 @@ message ArrayMessage {
     repeated Message message = 1;
 }
 
+// group user
+message GroupUser {
+    int64 id = 1;
+    string group_id = 2;
+    int64 uid = 3;
+}
+
+// group response
+message GUserResponse {
+    repeated GroupUser GroupUser = 1;
+}
+
+// user list
+message UserList {
+    repeated user.User userList = 1;
+}
+
+//
+message ChatUser {
+    user.User user = 1;
+}
+
 // rpc service
 service ChatService {
 
     // 创建群聊/好友
-    rpc DistributeGroup(UidS) returns (Response) {}
+    rpc DistributeGroup (UidS) returns (Response) {
+    }
 
     // 拉取群聊所有消息
-    rpc GetAllGroupMsg(Request) returns (ArrayMessage) {}
+    rpc GetAllGroupMsg (Request) returns (ArrayMessage) {
+    }
 
     // 拉取离线信息
-    rpc GetGroupLastMsg(Request) returns (ArrayMessage) {}
+    rpc GetGroupLastMsg (Request) returns (ArrayMessage) {
+    }
 
     // 已读离线信息
-    rpc ReadGroupLastMsg(Request) returns (Response) {}
+    rpc ReadGroupLastMsg (Request) returns (Response) {
+    }
+
+    // 获取群聊用户列表
+    rpc GetGroupUser (GroupUser) returns (GUserResponse) {
+    }
+
+    // 获取用户好友列表
+    // 直接用user.User problem
+    rpc GetUserList (ChatUser) returns (UserList) {
+    }
 }

@@ -4,6 +4,7 @@
 package proto
 
 import (
+	_ "deercoder-chat/user-srv/proto"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	math "math"
@@ -255,6 +256,11 @@ type ChatService interface {
 	GetGroupLastMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*ArrayMessage, error)
 	// 已读离线信息
 	ReadGroupLastMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
+	// 获取群聊用户列表
+	GetGroupUser(ctx context.Context, in *GroupUser, opts ...client.CallOption) (*GUserResponse, error)
+	// 获取用户好友列表
+	// 直接用user.User problem
+	GetUserList(ctx context.Context, in *ChatUser, opts ...client.CallOption) (*UserList, error)
 }
 
 type chatService struct {
@@ -315,6 +321,26 @@ func (c *chatService) ReadGroupLastMsg(ctx context.Context, in *Request, opts ..
 	return out, nil
 }
 
+func (c *chatService) GetGroupUser(ctx context.Context, in *GroupUser, opts ...client.CallOption) (*GUserResponse, error) {
+	req := c.c.NewRequest(c.name, "ChatService.GetGroupUser", in)
+	out := new(GUserResponse)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatService) GetUserList(ctx context.Context, in *ChatUser, opts ...client.CallOption) (*UserList, error) {
+	req := c.c.NewRequest(c.name, "ChatService.GetUserList", in)
+	out := new(UserList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for ChatService service
 
 type ChatServiceHandler interface {
@@ -326,6 +352,11 @@ type ChatServiceHandler interface {
 	GetGroupLastMsg(context.Context, *Request, *ArrayMessage) error
 	// 已读离线信息
 	ReadGroupLastMsg(context.Context, *Request, *Response) error
+	// 获取群聊用户列表
+	GetGroupUser(context.Context, *GroupUser, *GUserResponse) error
+	// 获取用户好友列表
+	// 直接用user.User problem
+	GetUserList(context.Context, *ChatUser, *UserList) error
 }
 
 func RegisterChatServiceHandler(s server.Server, hdlr ChatServiceHandler, opts ...server.HandlerOption) error {
@@ -334,6 +365,8 @@ func RegisterChatServiceHandler(s server.Server, hdlr ChatServiceHandler, opts .
 		GetAllGroupMsg(ctx context.Context, in *Request, out *ArrayMessage) error
 		GetGroupLastMsg(ctx context.Context, in *Request, out *ArrayMessage) error
 		ReadGroupLastMsg(ctx context.Context, in *Request, out *Response) error
+		GetGroupUser(ctx context.Context, in *GroupUser, out *GUserResponse) error
+		GetUserList(ctx context.Context, in *ChatUser, out *UserList) error
 	}
 	type ChatService struct {
 		chatService
@@ -360,4 +393,12 @@ func (h *chatServiceHandler) GetGroupLastMsg(ctx context.Context, in *Request, o
 
 func (h *chatServiceHandler) ReadGroupLastMsg(ctx context.Context, in *Request, out *Response) error {
 	return h.ChatServiceHandler.ReadGroupLastMsg(ctx, in, out)
+}
+
+func (h *chatServiceHandler) GetGroupUser(ctx context.Context, in *GroupUser, out *GUserResponse) error {
+	return h.ChatServiceHandler.GetGroupUser(ctx, in, out)
+}
+
+func (h *chatServiceHandler) GetUserList(ctx context.Context, in *ChatUser, out *UserList) error {
+	return h.ChatServiceHandler.GetUserList(ctx, in, out)
 }

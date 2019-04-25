@@ -87,6 +87,16 @@ func (c *ChatService) ReadGroupLastMsg(ctx context.Context, req *proto.Request, 
 	return err
 }
 
+// 获取用户好友列表
+func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp *proto.UserList) error {
+	return chat.GetUserList(req.User.Id, rsp.UserList)
+}
+
+// 获取群聊中用户列表
+func (c * ChatService) GetGroupUser(ctx context.Context, req *proto.GroupUser, rsp *proto.GUserResponse) error {
+	return chat.GetGroupUser(req.GroupId, rsp.GroupUser)
+}
+
 // 群发消息
 func MassMessage(u *gin.Context) {
 

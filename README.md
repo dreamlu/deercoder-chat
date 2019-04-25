@@ -10,3 +10,9 @@ websocket IM
 5....
 
 > 状态-ing  
+
+- 登录  
+![login html](common-srv/static/img/login.png)  
+
+- 好友列表(will like this)
+![](common-srv/static/img/chat.png)  
