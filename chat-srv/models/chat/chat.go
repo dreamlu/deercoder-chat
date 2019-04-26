@@ -2,7 +2,6 @@ package chat
 
 import (
 	"deercoder-chat/chat-srv/proto"
-	user "deercoder-chat/user-srv/proto"
 	"errors"
 	"fmt"
 	"github.com/dreamlu/deercoder-gin"
@@ -51,7 +50,6 @@ type GroupUser struct {
 //func DeleteGroup(){
 //
 //}
-
 
 // 添加好友
 // 建立群组,未来扩展
@@ -218,15 +216,19 @@ func MassMessage(group_ids, send_uids, from_uid, content string) interface{} {
 
 // 查找用户好友列表
 // 排除自己
-func GetUserList(uid int64, users []*user.User) error{
+func GetUserList(uid int64) (users []*proto.ChatUser, err error) {
 
-	dba := deercoder.DB.Raw("select * from (select a.id,name,headimg,createtime from `user` a inner join `group_users` where a.id = ?) a where a.id != ?", uid, uid).Scan(&users)
-	return dba.Error
+	sql := `select a.id,name,headimg,createtime,b.group_id 
+			from `+"`user`"+` a inner join `+"`group_users`"+` b on a.id = b.uid 
+			where b.group_id in (select group_id from `+"`group_users`"+` where uid = a.id) 
+			and a.id != ?`
+	dba := deercoder.DB.Raw(sql, uid).Scan(&users)
+	return users, dba.Error
 }
 
 // 查找群聊中所有用户
 // 包含自己
-func GetGroupUser(group_id string, gusers []*proto.GroupUser) error{
+func GetGroupUser(group_id string, gusers []*proto.GroupUser) error {
 
 	dba := deercoder.DB.Raw("select id,group_id,uid from `group_users` where group_id = ?", group_id).Scan(&gusers)
 	return dba.Error

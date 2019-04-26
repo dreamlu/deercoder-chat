@@ -5,7 +5,6 @@ import (
 	"deercoder-chat/api-gateway/conf"
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
-	user "deercoder-chat/user-srv/proto"
 	"github.com/dreamlu/deercoder-gin/util/lib"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
@@ -129,13 +128,11 @@ func ReadGroupLastMsg(u *gin.Context) {
 
 // 获取好友列表
 func GetUserList(u *gin.Context) {
-	uid, _ := strconv.ParseInt(u.PostForm("uid"), 10, 64)
+	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
 
 	// rpc service
 	res, err := chatClient.GetUserList(context.TODO(), &proto.ChatUser{
-		User: &user.User{
-			Id: uid,
-		},
+		Id: uid,
 	})
 
 	if err != nil {

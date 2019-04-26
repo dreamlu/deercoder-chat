@@ -1163,19 +1163,12 @@
         outline: none;
     }
 </style>
-<!-- 
-
-A concept for a chat interface. 
-
-Try writing a new message! :)
 
 
-Follow me here:
-Twitter: https://twitter.com/thatguyemil
-Codepen: https://codepen.io/emilcarlsson/
-Website: http://emilcarlsson.se/
-
--->
+<!-- js模板引擎 -->
+<script src="js/jsrender.min.js"></script>
+<script src="js/js.cookie.min.js"></script>
+<script src="js/chat.js"></script>
 
 <div id="frame">
     <div id="sidepanel">
@@ -1211,8 +1204,29 @@ Website: http://emilcarlsson.se/
             <input type="text" placeholder="Search contacts...">
         </div>
         <div id="contacts">
+            <script>
+                $(function() {
+                    userList();
+                });
+            </script>
             <ul>
+
+                <script type="text/x-jsrender" id="userList">
+                {{for #userList}}
                 <li class="contact">
+                    <div class="wrap">
+                        <span class="contact-status online"></span>
+                        <img src="{{:headimg}}" alt="">
+                        <div class="meta">
+                            <p class="name">{{:name}}</p>
+                            <p class="preview">You just got LITT up, userName.</p>
+                        </div>
+                    </div>
+                </li>
+                {{/for}}
+                </script>
+
+                <!-- <li class="contact">
                     <div class="wrap">
                         <span class="contact-status online"></span>
                         <img src="chat_config/louislitt.png" alt="">
@@ -1222,6 +1236,7 @@ Website: http://emilcarlsson.se/
                         </div>
                     </div>
                 </li>
+
                 <li class="contact active">
                     <div class="wrap">
                         <span class="contact-status busy"></span>
@@ -1262,57 +1277,8 @@ Website: http://emilcarlsson.se/
                             <p class="preview">Have you finished the draft on the Hinsenburg deal?</p>
                         </div>
                     </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="chat_config/haroldgunderson.png" alt="">
-                        <div class="meta">
-                            <p class="name">Harold Gunderson</p>
-                            <p class="preview">Thanks Mike! :)</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="chat_config/danielhardman.png" alt="">
-                        <div class="meta">
-                            <p class="name">Daniel Hardman</p>
-                            <p class="preview">We'll meet again, Mike. Tell Jessica I said 'Hi'.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status busy"></span>
-                        <img src="chat_config/katrinabennett.png" alt="">
-                        <div class="meta">
-                            <p class="name">Katrina Bennett</p>
-                            <p class="preview">I've sent you the files for the Garrett trial.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="chat_config/charlesforstman.png" alt="">
-                        <div class="meta">
-                            <p class="name">Charles Forstman</p>
-                            <p class="preview">Mike, this isn't over.</p>
-                        </div>
-                    </div>
-                </li>
-                <li class="contact">
-                    <div class="wrap">
-                        <span class="contact-status"></span>
-                        <img src="chat_config/jonathansidwell.png" alt="">
-                        <div class="meta">
-                            <p class="name">Jonathan Sidwell</p>
-                            <p class="preview"><span>You:</span> That's bullshit. This deal is solid.</p>
-                        </div>
-                    </div>
-                </li>
+                </li> -->
+
             </ul>
         </div>
         <div id="bottom-bar">

@@ -4,7 +4,6 @@
 package proto
 
 import (
-	_ "deercoder-chat/user-srv/proto"
 	fmt "fmt"
 	proto "github.com/golang/protobuf/proto"
 	math "math"

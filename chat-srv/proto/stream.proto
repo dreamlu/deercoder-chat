@@ -3,7 +3,7 @@ syntax = "proto3";
 package proto;
 
 //option go_package = "deercoder-chat/user-srv";
-import "deercoder-chat/user-srv/proto/user.proto";
+//import "deercoder-chat/user-srv/proto/user.proto";
 
 service Streamer {
     rpc Stream (stream Request) returns (stream Response) {
@@ -62,12 +62,17 @@ message GUserResponse {
 
 // user list
 message UserList {
-    repeated user.User userList = 1;
+    repeated ChatUser userList = 1;
 }
 
-//
+// 聊天用户
 message ChatUser {
-    user.User user = 1;
+    int64 id = 1;
+    string name = 2;
+    string headimg = 3;
+    string password = 4;
+    string createtime = 5;
+    string groupId = 6;
 }
 
 // rpc service

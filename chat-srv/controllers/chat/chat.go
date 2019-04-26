@@ -88,8 +88,11 @@ func (c *ChatService) ReadGroupLastMsg(ctx context.Context, req *proto.Request, 
 }
 
 // 获取用户好友列表
-func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp *proto.UserList) error {
-	return chat.GetUserList(req.User.Id, rsp.UserList)
+func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp *proto.UserList) (err error) {
+
+	//users := []*proto.ChatUser
+	rsp.UserList, err = chat.GetUserList(req.Id)
+	return err
 }
 
 // 获取群聊中用户列表
