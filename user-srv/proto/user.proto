@@ -8,7 +8,8 @@ message User {
     string name = 2;
     string headimg = 3;
     string password = 4;
-    string createtime = 5;
+    string introduce = 5;
+    string createtime = 6;
 }
 
 // search model

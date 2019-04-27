@@ -1,7 +1,6 @@
 package chat
 
 import (
-	"context"
 	"deercoder-chat/chat-srv/proto"
 	"github.com/dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
@@ -71,11 +70,14 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		//_ = chat.CreateGroupMsg(req.Message.Uuid, req.Message.GroupId, req.Message.FromUid, req.Message.Content, req.Message.ContentType)
 		// use go-micro stream deal with the emessage
 		// Send request to stream server
-		stream, err := cli.ServerStream(context.Background(), &req)
-		if err != nil {
-			log.Println("[错误]: " + err.Error())
-		}
-		defer stream.Close()
+
+
+		//stream, err := cli.ServerStream(context.Background(), &req)
+		//if err != nil {
+		//	log.Println("[错误]: " + err.Error())
+		//}
+		//defer stream.Close()
+
 
 		// Read from stream, end request once the stream is closed
 		//rsp, err := stream.Recv()

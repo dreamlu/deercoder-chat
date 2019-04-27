@@ -59,7 +59,7 @@ CREATE TABLE `group_msg` (
   `content_type` varchar(10) DEFAULT 'text' COMMENT '内容类,默认文本类型',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `uuid` (`uuid`) USING BTREE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -68,6 +68,7 @@ CREATE TABLE `group_msg` (
 
 LOCK TABLES `group_msg` WRITE;
 /*!40000 ALTER TABLE `group_msg` DISABLE KEYS */;
+INSERT INTO `group_msg` VALUES (1,'asfddgdsfgshfdsffgdf','93f65451-efc4-11e8-918b-34e6d7558045','',1,'2019-04-27 18:00:55','text');
 /*!40000 ALTER TABLE `group_msg` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -85,7 +86,7 @@ CREATE TABLE `group_users` (
   `create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE KEY `group_id` (`group_id`,`uid`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=100000002 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=100000006 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -94,7 +95,7 @@ CREATE TABLE `group_users` (
 
 LOCK TABLES `group_users` WRITE;
 /*!40000 ALTER TABLE `group_users` DISABLE KEYS */;
-INSERT INTO `group_users` VALUES (100000000,'93f65451-efc4-11e8-918b-34e6d7558043',1,NULL),(100000001,'93f65451-efc4-11e8-918b-34e6d7558043',2,NULL);
+INSERT INTO `group_users` VALUES (100000000,'93f65451-efc4-11e8-918b-34e6d7558043',1,NULL),(100000001,'93f65451-efc4-11e8-918b-34e6d7558043',2,NULL),(100000002,'93f65451-efc4-11e8-918b-34e6d7558044',1,NULL),(100000003,'93f65451-efc4-11e8-918b-34e6d7558044',3,NULL),(100000004,'93f65451-efc4-11e8-918b-34e6d7558045',1,NULL),(100000005,'93f65451-efc4-11e8-918b-34e6d7558045',5,NULL);
 /*!40000 ALTER TABLE `group_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,9 +111,10 @@ CREATE TABLE `user` (
   `name` varchar(30) DEFAULT '' COMMENT '用户名',
   `headimg` varchar(255) DEFAULT '' COMMENT '头像',
   `password` varchar(50) DEFAULT '' COMMENT '密码',
-  `createtime` datetime DEFAULT NULL,
+  `introduce` varchar(100) DEFAULT NULL COMMENT '自我介绍',
+  `createtime` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +123,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'admin','xxx.img','2c39f9867429',NULL),(2,'test','xxx.img','2c39f9867429','2018-11-24 19:15:54');
+INSERT INTO `user` VALUES (1,'admin','static/file/head1.jpeg','2c39f9867429','admin测试','2018-11-24 19:15:54'),(2,'test','static/file/head2.jpeg','2c39f9867429','test测试,这是一份测试','2018-11-24 19:15:54'),(3,'user','static/file/head3.jpeg','2c39f9867429','user测试','2018-11-24 19:15:54'),(4,'lululu','static/file/head1.jpeg','2c39f9867429','lullulu的世界','2018-11-24 19:15:54'),(5,'从前有个鹿，lululu～','static/file/head2.jpeg','2c39f9867429','各位看官好，我是鹿成','2018-11-24 19:15:54');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -138,4 +140,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-04-24 14:18:17
+-- Dump completed on 2019-04-27 19:21:44

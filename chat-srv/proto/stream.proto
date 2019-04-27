@@ -60,19 +60,20 @@ message GUserResponse {
     repeated GroupUser GroupUser = 1;
 }
 
-// user list
+// 好友列表[数组]
 message UserList {
     repeated ChatUser userList = 1;
 }
 
-// 聊天用户
+// 好友包列表用户[个人]
 message ChatUser {
     int64 id = 1;
     string name = 2;
     string headimg = 3;
     string password = 4;
-    string createtime = 5;
-    string groupId = 6;
+    string introduce = 5;
+    string createtime = 6;
+    string groupId = 7;
 }
 
 // rpc service

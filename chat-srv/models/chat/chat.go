@@ -218,7 +218,7 @@ func MassMessage(group_ids, send_uids, from_uid, content string) interface{} {
 // 排除自己
 func GetUserList(uid int64) (users []*proto.ChatUser, err error) {
 
-	sql := `select a.id,name,headimg,createtime,b.group_id 
+	sql := `select a.id,name,headimg,introduce,createtime,b.group_id 
 			from `+"`user`"+` a inner join `+"`group_users`"+` b on a.id = b.uid 
 			where b.group_id in (select group_id from `+"`group_users`"+` where uid = a.id) 
 			and a.id != ?`
