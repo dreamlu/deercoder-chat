@@ -27,7 +27,7 @@ message Message {
     string group_id = 2;
     int64 from_uid = 3;
     string headimg = 4;
-    string username = 5;
+    string name = 5;
     string content = 6;
     string content_type = 7;
     string create_time = 8;

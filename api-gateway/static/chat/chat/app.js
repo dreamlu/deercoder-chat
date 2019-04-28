@@ -42,7 +42,6 @@ new Vue({
                         flag: 0, //0老师,1学生,
                         time:"2018-01-01"
                     }
-
                 ));
                 this.newMsg = ''; // Reset newMsg
             }

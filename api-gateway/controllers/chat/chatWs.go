@@ -44,8 +44,9 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		var req proto.Request
 		// var msg chat.Message
 		// Read in a new message as JSON and map it to a Message object
-		err := ws.ReadJSON(&req.Message)
 
+		err := ws.ReadJSON(&req.Message)
+		//log.Println("[消息内容]: ", req.Message)
 		if err != nil {
 			log.Printf("[错误]: %v", err)
 			//delete(clients, ws) //删除对应连接

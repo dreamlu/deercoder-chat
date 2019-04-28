@@ -12,6 +12,9 @@ websocket IM
 
 > 状态-ing  
 
+- 微服务各个模块运行状态  
+[http://localhost:8500](http://localhost:8500)
+
 - 登录  
 ![login html](common-srv/static/img/login.png)  
 
