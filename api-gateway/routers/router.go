@@ -56,6 +56,7 @@ func SetRouter() *gin.Engine {
 			chats.POST("/readLastMsg", chat.ReadGroupLastMsg)
 			chats.GET("/getGroupUser", chat.GetGroupUser)
 			chats.GET("/getUserList", chat.GetUserList)
+			chats.GET("/getUserSearchList", chat.GetUserSearchList)
 		}
 
 		// 用户服务

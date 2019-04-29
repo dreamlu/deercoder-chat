@@ -18,17 +18,18 @@ type Message struct {
 	Headimg     string             `json:"headimg"`      //头像
 	Name        string             `json:"username"`     //用户名
 	Content     string             `json:"content"`      //消息内容
-	ContentType string             `json:"content_type"` //消息类型,0文字,1图片,2....
+	ContentType string             `json:"content_type"` //消息类型,文字'text',图片'img',2....
 	CreateTime  deercoder.JsonTime `json:"create_time"`  //创建时间
 }
 
 // 群聊发送模型
 type GroupMsg struct {
-	ID         int64              `json:"id"`
-	GroupID    string             `json:"group_id"`    //群聊id
-	Content    int64              `json:"content"`     //消息内容
-	FromUid    int64              `json:"from_uid"`    //由谁发送
-	CreateTime deercoder.JsonTime `json:"create_time"` //创建时间
+	ID          int64              `json:"id"`
+	GroupID     string             `json:"group_id"`     //群聊id
+	Content     int64              `json:"content"`      //消息内容
+	FromUid     int64              `json:"from_uid"`     //由谁发送
+	ContentType string             `json:"content_type"` //消息类型,文本'text'
+	CreateTime  deercoder.JsonTime `json:"create_time"`  //创建时间
 }
 
 // 群聊最后记录
@@ -84,11 +85,11 @@ func DistributeGroup(uids string) (groupId string, err error) {
 
 // 聊天记录
 // 群聊消息,创建
-func CreateGroupMsg(uuid, group_id string, from_uid int64, content, content_type string) (err error) {
+func CreateGroupMsg(msg *proto.Message) (err error) {
 
 	//需要id,用来每次聊天生成的id作为聊天记录id,以便群离线消息记录该id
 	sql := "insert `group_msg`(uuid, group_id, content, from_uid, content_type) value(?,?,?,?,?)"
-	dba := deercoder.DB.Exec(sql, uuid, group_id, content, from_uid, content_type)
+	dba := deercoder.DB.Exec(sql, msg.Uuid, msg.GroupId, msg.Content, msg.FromUid, msg.ContentType)
 
 	if dba.Error != nil {
 		return dba.Error
@@ -117,13 +118,11 @@ func GetAllGroupMsg(group_id string) ([]*proto.Message, error) {
 
 	//拉取该群聊的所有消息
 	sql := fmt.Sprintf("select %s from group_msg where group_id=?", deercoder.GetColSql(GroupMsg{}))
-
 	var msg []*proto.Message
 
-	deercoder.DB.Raw(sql, group_id).Scan(msg)
+	deercoder.DB.Raw(sql, group_id).Scan(&msg)
 
-	if msg[0].GroupId == "" {
-
+	if len(msg) == 0 || msg[0].GroupId == "" {
 		return msg, errors.New("暂无离线消息")
 	}
 	sql = "select name, headimg from `user` where id = ?"
@@ -219,10 +218,22 @@ func MassMessage(group_ids, send_uids, from_uid, content string) interface{} {
 func GetUserList(uid int64) (users []*proto.ChatUser, err error) {
 
 	sql := `select a.id,name,headimg,introduce,createtime,b.group_id 
-			from `+"`user`"+` a inner join `+"`group_users`"+` b on a.id = b.uid 
-			where b.group_id in (select group_id from `+"`group_users`"+` where uid = a.id) 
+			from ` + "`user`" + ` a inner join ` + "`group_users`" + ` b on a.id = b.uid 
+			where b.group_id in (select group_id from ` + "`group_users`" + ` where uid = ?) 
 			and a.id != ?`
-	dba := deercoder.DB.Raw(sql, uid).Scan(&users)
+	dba := deercoder.DB.Raw(sql, uid, uid).Scan(&users)
+	return users, dba.Error
+}
+
+// 搜索用户好友列表中指定用户
+// 排除自己
+func GetUserSearchList(uid int64, name string) (users []*proto.ChatUser, err error) {
+
+	sql := `select a.id,name,headimg,introduce,createtime,b.group_id 
+			from ` + "`user`" + ` a inner join ` + "`group_users`" + ` b on a.id = b.uid 
+			where b.group_id in (select group_id from ` + "`group_users`" + ` where uid = ? and name like '%` + name + `%') 
+			and a.id != ?`
+	dba := deercoder.DB.Raw(sql, uid, uid).Scan(&users)
 	return users, dba.Error
 }
 

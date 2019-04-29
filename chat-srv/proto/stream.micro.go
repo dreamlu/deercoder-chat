@@ -260,6 +260,10 @@ type ChatService interface {
 	// 获取用户好友列表
 	// 直接用user.User problem
 	GetUserList(ctx context.Context, in *ChatUser, opts ...client.CallOption) (*UserList, error)
+	// 搜索获取获取群聊用户列表
+	GetUserSearchList(ctx context.Context, in *ChatUserSearch, opts ...client.CallOption) (*UserList, error)
+	// 创建消息记录
+	CreateGroupMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error)
 }
 
 type chatService struct {
@@ -340,6 +344,26 @@ func (c *chatService) GetUserList(ctx context.Context, in *ChatUser, opts ...cli
 	return out, nil
 }
 
+func (c *chatService) GetUserSearchList(ctx context.Context, in *ChatUserSearch, opts ...client.CallOption) (*UserList, error) {
+	req := c.c.NewRequest(c.name, "ChatService.GetUserSearchList", in)
+	out := new(UserList)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *chatService) CreateGroupMsg(ctx context.Context, in *Request, opts ...client.CallOption) (*Response, error) {
+	req := c.c.NewRequest(c.name, "ChatService.CreateGroupMsg", in)
+	out := new(Response)
+	err := c.c.Call(ctx, req, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // Server API for ChatService service
 
 type ChatServiceHandler interface {
@@ -356,6 +380,10 @@ type ChatServiceHandler interface {
 	// 获取用户好友列表
 	// 直接用user.User problem
 	GetUserList(context.Context, *ChatUser, *UserList) error
+	// 搜索获取获取群聊用户列表
+	GetUserSearchList(context.Context, *ChatUserSearch, *UserList) error
+	// 创建消息记录
+	CreateGroupMsg(context.Context, *Request, *Response) error
 }
 
 func RegisterChatServiceHandler(s server.Server, hdlr ChatServiceHandler, opts ...server.HandlerOption) error {
@@ -366,6 +394,8 @@ func RegisterChatServiceHandler(s server.Server, hdlr ChatServiceHandler, opts .
 		ReadGroupLastMsg(ctx context.Context, in *Request, out *Response) error
 		GetGroupUser(ctx context.Context, in *GroupUser, out *GUserResponse) error
 		GetUserList(ctx context.Context, in *ChatUser, out *UserList) error
+		GetUserSearchList(ctx context.Context, in *ChatUserSearch, out *UserList) error
+		CreateGroupMsg(ctx context.Context, in *Request, out *Response) error
 	}
 	type ChatService struct {
 		chatService
@@ -400,4 +430,12 @@ func (h *chatServiceHandler) GetGroupUser(ctx context.Context, in *GroupUser, ou
 
 func (h *chatServiceHandler) GetUserList(ctx context.Context, in *ChatUser, out *UserList) error {
 	return h.ChatServiceHandler.GetUserList(ctx, in, out)
+}
+
+func (h *chatServiceHandler) GetUserSearchList(ctx context.Context, in *ChatUserSearch, out *UserList) error {
+	return h.ChatServiceHandler.GetUserSearchList(ctx, in, out)
+}
+
+func (h *chatServiceHandler) CreateGroupMsg(ctx context.Context, in *Request, out *Response) error {
+	return h.ChatServiceHandler.CreateGroupMsg(ctx, in, out)
 }

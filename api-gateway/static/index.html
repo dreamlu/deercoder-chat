@@ -229,8 +229,6 @@
 <body>
 <link href="chat_config/bootstrap.min(1).css" rel="stylesheet" id="bootstrap-css">
 <script src="chat_config/bootstrap.min(2).js"></script>
-<!------ Include the above in your HEAD tag ---------->
-
 
 <!-- script src="chat_config/console_runner-079c09a0e3b9ff743e39ee2d5637b9216b3545af0de366d4b9aad9dc87e26bfd.js"></script>
 script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d14629260c3ec49e5606f98fdd.js"></script
@@ -238,7 +236,7 @@ script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d146
 
 <link href="chat_config/css" rel="stylesheet" type="text/css">
 
-<script src="chat_config/hoy3lrg.js"></script>
+<!--script src="chat_config/hoy3lrg.js"></script-->
 <script>try {
         Typekit.load({async: true});
     } catch (e) {
@@ -1061,6 +1059,7 @@ script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d146
     <div id="sidepanel">
         <div id="profile">
             <div class="wrap">
+                <!-- 在线状态 -->
                 <img id="profile-img" src="chat_config/mikeross.png" class="online" alt="">
                 <p>Mike Ross</p>
                 <i class="fa fa-chevron-down expand-button" aria-hidden="true"></i>
@@ -1115,32 +1114,33 @@ script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d146
                     </div>
 
 
+
             </script>
         </div>
         <div id="search">
             <label for=""><i class="fa fa-search" aria-hidden="true"></i></label>
-            <input type="text" placeholder="Search contacts...">
+            <input type="text" placeholder="搜索好友...">
         </div>
         <div id="contacts">
             <ul id="contact">
 
-                <script type="text/x-jsrender" id="userList">
+            </ul>
+            <script type="text/x-jsrender" id="userList">
                 {{for #data}}
                 <li class="contact">
                     <div class="wrap">
-                        <span class="contact-status online"></span>
+                        <!-- span class="contact-status online"></span -->
                         <img src="{{:headimg}}" alt="" class="headimg">
                         <div class="meta">
                             <p class="name">{{:name}}</p>
                             <p class="preview">{{:introduce}}</p>
+                            <p class="groupId" hidden="true">{{:groupId}}</p>
                         </div>
                     </div>
                 </li>
                 {{/for}}
 
-
-                </script>
-            </ul>
+            </script>
         </div>
         <div id="bottom-bar">
             <button id="addcontact"><i class="fa fa-user-plus fa-fw" aria-hidden="true"></i> <span>添加好友</span>
@@ -1150,8 +1150,8 @@ script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d146
     </div>
     <div class="content">
         <div class="contact-profile" id="groupUser">
-            <img src="chat_config/harveyspecter.png" alt="">
-            <p>Harvey Specter</p>
+            <!--img src="chat_config/harveyspecter.png" alt="">
+            <p>默认用户</p -->
             <!--div class="social-media">
                 <i class="fa fa-facebook" aria-hidden="true"></i>
                 <i class="fa fa-twitter" aria-hidden="true"></i>
@@ -1162,11 +1162,13 @@ script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d146
         <script type="text/x-jsrender" id="groupUserInfo">
             <img src="{{:headimg}}" alt="">
             <p>{{:name}}</p>
+            <p class="groupId" hidden="true">{{:groupId}}</p>
+
 
         </script>
         <div class="messages">
             <ul>
-                <li class="replies">
+                <!-- li class="replies">
                     <img src="chat_config/mikeross.png" alt="">
                     <p>测试测试</p>
                 </li>
@@ -1177,27 +1179,7 @@ script src="chat_config/events_runner-73716630c22bbc8cff4bd0f07b135f00a0bdc5d146
                 <li class="sent">
                     <img src="chat_config/harveyspecter.png" alt="">
                     <p>hello, 你好你好.</p>
-                </li>
-                <li class="replies">
-                    <img src="chat_config/mikeross.png" alt="">
-                    <p>你好，你是谁呀？</p>
-                </li>
-                <li class="sent">
-                    <img src="chat_config/harveyspecter.png" alt="">
-                    <p>嘿嘿嘿和沙发的撒旦法.</p>
-                </li>
-                <li class="sent">
-                    <img src="chat_config/harveyspecter.png" alt="">
-                    <p>爱狗狗过过过过过过过过过过过过过过过过过过过过过多付或</p>
-                </li>
-                <li class="replies">
-                    <img src="chat_config/mikeross.png" alt="">
-                    <p>阿道夫付付发是个好过分的多元化的发挥好的观点</p>
-                </li>
-                <li class="sent">
-                    <img src="chat_config/harveyspecter.png" alt="">
-                    <p>W送达方开始了空间发链接洒到了快放假了圣诞节覅世界佛教是跨年福利卡电脑数据发布科技表示大家可否把健身卡</p>
-                </li>
+                </li -->
             </ul>
         </div>
         <div class="message-input">

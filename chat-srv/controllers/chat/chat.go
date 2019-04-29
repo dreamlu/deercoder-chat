@@ -87,6 +87,11 @@ func (c *ChatService) ReadGroupLastMsg(ctx context.Context, req *proto.Request, 
 	return err
 }
 
+// 获取群聊中用户列表
+func (c * ChatService) GetGroupUser(ctx context.Context, req *proto.GroupUser, rsp *proto.GUserResponse) error {
+	return chat.GetGroupUser(req.GroupId, rsp.GroupUser)
+}
+
 // 获取用户好友列表
 func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp *proto.UserList) (err error) {
 
@@ -95,9 +100,22 @@ func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp
 	return err
 }
 
-// 获取群聊中用户列表
-func (c * ChatService) GetGroupUser(ctx context.Context, req *proto.GroupUser, rsp *proto.GUserResponse) error {
-	return chat.GetGroupUser(req.GroupId, rsp.GroupUser)
+// 获取用户好友列表
+func (c * ChatService) GetUserSearchList(ctx context.Context, req *proto.ChatUserSearch, rsp *proto.UserList) (err error) {
+
+	//users := []*proto.ChatUser
+	rsp.UserList, err = chat.GetUserSearchList(req.Id, req.Name)
+	return err
+}
+
+// 拉取群聊所有消息
+func (c *ChatService) CreateGroupMsg(ctx context.Context, req *proto.Request, rsp *proto.Response) error {
+
+	err := chat.CreateGroupMsg(req.Message)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // 群发消息

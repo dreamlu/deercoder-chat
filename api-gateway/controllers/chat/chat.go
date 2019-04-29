@@ -23,7 +23,7 @@ var (
 func init() {
 	// New RPC client
 	rpcClient := client.NewClient(client.RequestTimeout(time.Second * 120))
-	cli = proto.NewStreamerService("deercoder-chat.chat", rpcClient)
+	cli = proto.NewStreamerService(conf.ChatSrv, rpcClient)
 }
 
 //聊天ws
@@ -41,11 +41,11 @@ func ChatWS(u *gin.Context) {
 // chat service
 
 var (
-	chatClient proto.ChatService
+	ChatClient proto.ChatService
 )
 
 func init() {
-	chatClient = proto.NewChatService(conf.ChatSrv, client.DefaultClient)
+	ChatClient = proto.NewChatService(conf.ChatSrv, client.DefaultClient)
 }
 
 // 创建群聊/好友
@@ -54,7 +54,7 @@ func DistributeGroup(u *gin.Context) {
 	uids := u.PostForm("uids")
 
 	// rpc service
-	res, err := chatClient.DistributeGroup(context.TODO(), &proto.UidS{
+	res, err := ChatClient.DistributeGroup(context.TODO(), &proto.UidS{
 		Uids: uids,
 	})
 
@@ -71,7 +71,7 @@ func GetAllGroupMsg(u *gin.Context) {
 	group_id := u.Query("group_id")
 
 	// rpc service
-	res, err := chatClient.GetAllGroupMsg(context.TODO(), &proto.Request{
+	res, err := ChatClient.GetAllGroupMsg(context.TODO(), &proto.Request{
 		Message: &proto.Message{
 			GroupId: group_id,
 		},
@@ -91,7 +91,7 @@ func GetGroupLastMsg(u *gin.Context) {
 	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
 
 	// rpc service
-	res, err := chatClient.GetGroupLastMsg(context.TODO(), &proto.Request{
+	res, err := ChatClient.GetGroupLastMsg(context.TODO(), &proto.Request{
 		Message: &proto.Message{
 			GroupId: group_id,
 			FromUid: uid,
@@ -112,7 +112,7 @@ func ReadGroupLastMsg(u *gin.Context) {
 	uid, _ := strconv.ParseInt(u.PostForm("uid"), 10, 64)
 
 	// rpc service
-	res, err := chatClient.ReadGroupLastMsg(context.TODO(), &proto.Request{
+	res, err := ChatClient.ReadGroupLastMsg(context.TODO(), &proto.Request{
 		Message: &proto.Message{
 			GroupId: group_id,
 			FromUid: uid,
@@ -131,8 +131,26 @@ func GetUserList(u *gin.Context) {
 	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
 
 	// rpc service
-	res, err := chatClient.GetUserList(context.TODO(), &proto.ChatUser{
+	res, err := ChatClient.GetUserList(context.TODO(), &proto.ChatUser{
 		Id: uid,
+	})
+
+	if err != nil {
+		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		return
+	}
+	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+}
+
+// 搜索获取好友列表
+func GetUserSearchList(u *gin.Context) {
+	uid, _ := strconv.ParseInt(u.Query("uid"), 10, 64)
+	name := u.Query("name")
+
+	// rpc service
+	res, err := ChatClient.GetUserSearchList(context.TODO(), &proto.ChatUserSearch{
+		Id:   uid,
+		Name: name,
 	})
 
 	if err != nil {
@@ -147,7 +165,7 @@ func GetGroupUser(u *gin.Context) {
 	gid := u.PostForm("group_id")
 
 	// rpc service
-	res, err := chatClient.GetGroupUser(context.TODO(), &proto.GroupUser{
+	res, err := ChatClient.GetGroupUser(context.TODO(), &proto.GroupUser{
 		GroupId: gid,
 	})
 
@@ -157,6 +175,22 @@ func GetGroupUser(u *gin.Context) {
 	}
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
 }
+
+//// 创建聊天记录记录
+//func CreateGroupMsg(u *gin.Context) {
+//	gid := u.PostForm("group_id")
+//
+//	// rpc service
+//	res, err := chatClient.GetGroupUser(context.TODO(), &proto.GroupUser{
+//		GroupId: gid,
+//	})
+//
+//	if err != nil {
+//		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+//		return
+//	}
+//	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+//}
 
 // 群发消息
 func MassMessage(u *gin.Context) {

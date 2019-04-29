@@ -125,47 +125,43 @@ $("#contact").on("click", ".contact", function () {
 
     const name = $(this).find(".name").text();
     const headimg = $(this).find(".headimg").attr("src");
+    // 群聊id
+    const groupId = $(this).find(".groupId").text();
+
 
     // 好友信息
     // 聊天界面用户头像名称等信息
     const arrayData = {
         'name': name,
-        'headimg': headimg
+        'headimg': headimg,
+        'groupId': groupId
     };
     $("#groupUser").html($("#groupUserInfo").render(arrayData));
+
+    // 清除界面数据
+    $('.messages ul').empty();
+
+    // 拉取该群聊所有消息
+    getAllMsg(groupId);
 
     // 建立在线websocket即时通讯
     // 开始聊天
     if ("WebSocket" in window) {
         ws = new WebSocket(myWsApi + "/chat/chatWs");
 
+        // 建立ws连接
         ws.onopen = function () {
             // 拉取离线数据
 
-            // // 发送数据
-            // ws.send(JSON.stringify({
-            //         name: name,
-            //         headimg: headimg,
-            //         content: "聊天测试",
-            //         //测试
-            //         group_id: "93f65451-efc4-11e8-918b-34e6d7558045",
-            //         from_uid: 1,
-            //         content_type: "text"
-            //     }
-            // ));
-            //alert("数据发送中...");
         };
 
         // 接收数据
         ws.onmessage = function (res) {
-            console.log("[receive data]: " + res.data);
+            // console.log("[receive data]: " + res.data);
+            // 返回的数据json转换
             const data = JSON.parse(res.data);
-            //data.headimg = myApi + "/" + data.headimg;
-            //alert("数据已接收...");
-            $('<li class="sent"><img src="' + data.headimg + '" alt="" /><p>' + data.content + '</p></li>').appendTo($('.messages ul'));
-            $('.message-input input').val(null);
-            $('.contact.active .preview').html('<span>You: </span>' + data.content);
-            $(".messages").animate({scrollTop: $(document).height()}, "fast");
+            // 设置聊天内容样式
+            setMsgContent(data);
         };
 
         // 连接关闭
@@ -180,6 +176,126 @@ $("#contact").on("click", ".contact", function () {
 
 });
 
+// 搜索好友
+// 回车搜索
+$("#search").on("keydown", function (e) {
+    if (e.which === 13) {
+        // 获取内容
+        const content = $("#search input").val();
+        if ($.trim(content) === '') {
+            return false;
+        }
+
+        // 请求数据
+        // 用户id
+        const uid = Cookies.get("uid")
+
+        // 请求数据
+        $.ajax({
+            url: myApi + "/chat/getUserSearchList",
+            method: "GET",
+            data: {
+                uid: uid,
+                name: content,
+            },
+            success: function (res) {
+                if (res.status === 200) {
+                    // 修改数据
+                    // 通过模板引擎渲染数据
+
+                    res.data.userList.forEach(
+                        function (val) {
+                            val.headimg = myApi + "/" + val.headimg;
+                        }
+                    );
+
+                    if (res.data.length === 0) {
+                        // 清除数据
+                        $("#contact").empty();
+                    }
+
+                    // 渲染数据
+                    $("#contact").html($("#userList").render(res.data.userList))
+
+                } else {
+                    confirm(res.msg)
+                }
+            }
+        })
+    }
+});
+
+//===========================================================
+
+// 拉取该群聊所有聊天记录
+function getAllMsg(group_id) {
+
+    $.ajax({
+        url: myApi + "/chat/allMsg/",
+        method: "GET",
+        data: {
+            group_id: group_id,
+        },
+        success: function (res) {
+            if (res.status === 200) {
+
+                res.data.forEach(
+                    function (val) {
+                        //console.log(val);
+                        // 看起来是深拷贝, 借助引用地址的样子
+                        val.headimg = myApi + "/" + val.headimg;
+                    }
+                );
+
+                // 加载聊天内容
+                // 设置聊天内容样式
+                setMsgContent(res.data);
+
+            }
+        }
+    })
+}
+
+// 设置聊天内容样式
+function setMsgContent(data) {
+
+    if (data instanceof Array) {
+        // 数组
+        data.forEach(
+            function (val) {
+                // 判断是否为当前用户
+                // 获取个人信息
+                const myInfo = JSON.parse(Cookies.get("myInfo"));
+                // 判断是否为当前用户
+                if (myInfo.id === val.from_uid) {
+                    $('<li class="sent"><img src="' + val.headimg + '" alt="" /><p>' + val.content + '</p></li>').appendTo($('.messages ul'));
+                } else {
+                    $('<li class="replies"><img src="' + val.headimg + '" alt="" /><p>' + val.content + '</p></li>').appendTo($('.messages ul'));
+                }
+
+                $('.message-input input').val(null);
+                $('.contact.active .preview').html('<span>You: </span>' + val.content);
+                $(".messages").animate({scrollTop: $(document).height()}, "fast");
+            }
+        );
+        return
+    }
+
+    // 判断是否为当前用户
+    // 获取个人信息
+    const myInfo = JSON.parse(Cookies.get("myInfo"));
+    // 判断是否为当前用户
+    if (myInfo.id === data.from_uid) {
+        $('<li class="sent"><img src="' + data.headimg + '" alt="" /><p>' + data.content + '</p></li>').appendTo($('.messages ul'));
+    } else {
+        $('<li class="replies"><img src="' + data.headimg + '" alt="" /><p>' + data.content + '</p></li>').appendTo($('.messages ul'));
+    }
+
+    $('.message-input input').val(null);
+    $('.contact.active .preview').html('<span>You: </span>' + data.content);
+    $(".messages").animate({scrollTop: $(document).height()}, "fast");
+
+}
 
 // 绑定聊天事件
 $('.submit').click(function () {
@@ -187,33 +303,38 @@ $('.submit').click(function () {
 });
 
 $(window).on('keydown', function (e) {
-    if (e.which == 13) {
+    if (e.which === 13) {
         newMessage();
         return false;
     }
 });
 
 // 组成消息体
+// 发送聊天消息
 function newMessage() {
 
     // 获取个人信息
     const myInfo = JSON.parse(Cookies.get("myInfo"));
 
+    // 群聊id
+    groupId = $("#groupUser").find(".groupId").text();
+
     // 发送消息体
     const content = $(".message-input input").val();
+    if ($.trim(content) === '') {
+        return false;
+    }
+
     msgData = {
         name: myInfo.name,
         headimg: myInfo.headimg,
         content: content,
         //测试
-        group_id: "93f65451-efc4-11e8-918b-34e6d7558045",
+        group_id: groupId,
         from_uid: myInfo.id,
         content_type: "text"
 
     };
-    if ($.trim(content) === '') {
-        return false;
-    }
 
     // ws消息发送
     // 发送数据

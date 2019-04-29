@@ -55,6 +55,14 @@ message GroupUser {
     int64 uid = 3;
 }
 
+// 用户搜索模型
+// group user
+message ChatUserSearch {
+    int64 id = 1;
+    string name = 2;
+    int64 uid = 3;
+}
+
 // group response
 message GUserResponse {
     repeated GroupUser GroupUser = 1;
@@ -102,5 +110,13 @@ service ChatService {
     // 获取用户好友列表
     // 直接用user.User problem
     rpc GetUserList (ChatUser) returns (UserList) {
+    }
+
+    // 搜索获取获取群聊用户列表
+    rpc GetUserSearchList (ChatUserSearch) returns (UserList) {
+    }
+
+    // 创建消息记录
+    rpc CreateGroupMsg (Request) returns (Response) {
     }
 }

@@ -6,15 +6,14 @@ import (
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry/consul"
 	"log"
-	"time"
 )
 
 func main() {
 	service := micro.NewService(
 		micro.Name("deercoder-chat.chat"),
 		micro.Registry(consul.NewRegistry()),
-		micro.RegisterTTL(time.Second*30),
-		micro.RegisterInterval(time.Second*10),
+		//micro.RegisterTTL(time.Second*30),
+		//micro.RegisterInterval(time.Second*10),
 		micro.Address(":8001"),
 	)
 
