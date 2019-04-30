@@ -16,6 +16,7 @@ require (
 	github.com/gogo/googleapis v1.2.0 // indirect
 	github.com/golang/protobuf v1.3.1
 	github.com/gorilla/websocket v1.4.0
+	github.com/hashicorp/consul v1.4.4
 	github.com/hashicorp/go-discover v0.0.0-20190403160810-22221edb15cd // indirect
 	github.com/hashicorp/nomad/api v0.0.0-20190405192411-f812e25ac1a7 // indirect
 	github.com/hashicorp/vault-plugin-auth-gcp v0.0.0-20190402000036-441a7965e9fe // indirect

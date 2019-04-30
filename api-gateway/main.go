@@ -2,7 +2,9 @@ package main
 
 import (
 	"deercoder-chat/api-gateway/routers"
+	"github.com/dreamlu/deercoder-gin"
 	"github.com/gin-gonic/gin"
+	"github.com/hashicorp/consul/api"
 	"github.com/micro/go-micro/registry/consul"
 	"github.com/micro/go-web"
 	"log"
@@ -13,28 +15,22 @@ import (
 //)
 
 func main() {
+
+	// registry
+	registry := consul.NewRegistry(consul.Config(
+		&api.Config{
+			Address: deercoder.GetDevModeConfig("consul.address"),
+			Scheme:  deercoder.GetDevModeConfig("consul.scheme"),
+		}))
+
 	// Create service
 	service := web.NewService(
 		web.Name("deercoder-chat.api"),
-		web.Registry(consul.NewRegistry()),
-		web.Address(":8006"),
+		web.Registry(registry),
+		web.Address(":"+deercoder.GetDevModeConfig("http_port")),
 	)
 
 	_ = service.Init()
-
-	//_ = service.Server().Handle(
-	//	service.Server().NewHandler(
-	//		&UserServie{
-	//			userClient: user.NewUserService("deercoder-chat.user", service.Client()),
-	//		},
-	//		),
-	//)
-
-	//
-	//micro.RegisterHandler(user, new(user.UserService))
-
-	// setup user Server Client
-	//UserClient = user.NewUserService("deercoder-chat.user", client.DefaultClient)
 
 	// Create RESTful handler (using Gin)
 	// Register Handler

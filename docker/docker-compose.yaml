@@ -1,0 +1,97 @@
+# docker-compose
+# author: dreamlu
+# github.com/dreamlu
+version: '3'
+services:
+  #nginx:
+  #  container_name: d-nginx
+  #  image: nginx
+  #  restart: always
+  #  ports:
+  #    - 80:80
+  #    - 443:443
+  #  volumes:
+  #    - ./nginx/conf.d:/etc/nginx/conf.d
+
+  # mysql-server
+  mysql:
+    build:
+      context: ./mysql
+      dockerfile: Dockerfile
+      args:
+        MYSQL_VERSION: 5.7
+        # 账号密码同下环境变量值
+        MYSQL_DATABASE: deercoder-chat
+        MYSQL_USER: dreamlu
+        MYSQL_PASSWORD: dreamlu
+        MYSQL_ROOT_PASSWORD: dreamlu
+    #command:
+    #privileged: true
+    container_name: d-mysql
+    #image: mysql/mysql-server:5.7
+    #image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: deercoder-chat
+      MYSQL_USER: dreamlu
+      MYSQL_PASSWORD: dreamlu
+      MYSQL_ROOT_PASSWORD: dreamlu
+      MYSQL_ROOT_HOST: '%'
+      TZ: Asia/Shanghai
+    ports:
+      - 3308:3306
+    restart: always
+    # sql备份目录
+    volumes:
+      - /home/ubuntu/dreamlu/bak:/bak
+    #expose:
+    #  - 3308
+  # redis
+  redis:
+    image: redis:4.0
+    ports:
+      - 6378:6379
+    container_name: d-redis
+    restart: always
+  # consul
+  consul:
+    image: consul
+    ports:
+      - 8300:8300
+      - 8301:8301
+      - 8301:8301/udp
+      - 8302:8302
+      - 8302:8302/udp
+      - 8400:8400
+      - 8500:8500
+      - 54:53/udp
+    container_name: d-consul
+    restart: always
+  # api gateway
+  api-gateway:
+    image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-api-gateway
+    ports:
+      - 8006:8006
+    container_name: d-api
+    restart: always
+  # user service
+  user-srv:
+    image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-user-srv
+    ports:
+      - 8000:8000
+    container_name: d-user
+    restart: always
+    #links:
+    #  - mysql
+    #  - redis
+    #depends_on:
+    #  - mysql
+  # chat service
+  chat-srv:
+    image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-chat-srv
+    ports:
+      - 8001:8001
+    container_name: d-chat
+    restart: always
+    # 图片挂载目录
+    volumes:
+      - /home/ubuntu/xmd/common-service:/common-service
