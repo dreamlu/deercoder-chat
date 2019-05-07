@@ -23,6 +23,7 @@ require (
 	github.com/hashicorp/vault-plugin-auth-jwt v0.0.0-20190405223429-c05fb7def42b // indirect
 	github.com/hashicorp/vault-plugin-secrets-kv v0.0.0-20190404212640-4807e6564154 // indirect
 	github.com/keybase/go-crypto v0.0.0-20190403132359-d65b6b94177f // indirect
+	github.com/kubernetes/kompose v1.18.0 // indirect
 	github.com/mattn/go-colorable v0.1.1 // indirect
 	github.com/micro/go-micro v1.1.0
 	github.com/micro/go-web v1.0.0

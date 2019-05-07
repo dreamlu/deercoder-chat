@@ -8,10 +8,10 @@ websocket IM
 3.工具类：[deercoder-gin](https://github.com/dreamlu/deercoder-gin)  
 4.websocket即时通讯  
 5.[在线接口查看](https://www.eolinker.com/#/share/index?shareCode=jH4ISr)  
-6.go micro docker化, 具体见Dockerfile  
+6.[go micro](https://github.com/micro/go-micro) docker化, 具体见Dockerfile  
 7.[docker-compose支持](docker/docker-compose.yaml)   
-8.k8s支持(待完善)  
-9....  
+8.[k8s支持](docker/k8s/README.md)  
+n....  
 
 > 状态-ing  
 

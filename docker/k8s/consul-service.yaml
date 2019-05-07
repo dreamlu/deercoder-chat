@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: ./kompose convert -f ../docker-compose.yaml
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: consul
+  name: consul
+spec:
+  ports:
+  - name: "8300"
+    port: 8300
+    targetPort: 8300
+  - name: "8301"
+    port: 8301
+    targetPort: 8301
+  - name: 8301-udp
+    port: 8301
+    protocol: UDP
+    targetPort: 8301
+  - name: "8302"
+    port: 8302
+    targetPort: 8302
+  - name: 8302-udp
+    port: 8302
+    protocol: UDP
+    targetPort: 8302
+  - name: "8400"
+    port: 8400
+    targetPort: 8400
+  - name: "8500"
+    port: 8500
+    targetPort: 8500
+    # consul对外暴露30005端口
+    nodePort: 30005
+  - name: "54"
+    port: 54
+    protocol: UDP
+    targetPort: 53
+  selector:
+    io.kompose.service: consul
+  type: NodePort
+status:
+  loadBalancer: {}

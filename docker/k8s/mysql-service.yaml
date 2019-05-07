@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    kompose.cmd: ./kompose convert -f ../docker-compose.yaml
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: mysql
+  name: mysql
+spec:
+  ports:
+  - name: "3308"
+    port: 3308
+    targetPort: 3306
+    # mysql 对外暴露33060端口
+    nodePort: 30060
+  selector:
+    io.kompose.service: mysql
+  type: NodePort
+status:
+  loadBalancer: {}

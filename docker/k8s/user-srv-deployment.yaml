@@ -1,0 +1,27 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: ./kompose convert -f ../docker-compose.yaml
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: user-srv
+  name: user-srv
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: user-srv
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-user-srv
+        name: d-user
+        ports:
+        - containerPort: 8000
+        resources: {}
+      restartPolicy: Always
+status: {}
