@@ -1,5 +1,4 @@
-//var myObj = {}
-// var
+// api地址等信息
 var api = "localhost:8006";
 var myApi = "http://" + api + "/api/v1";
 var myWsApi = "ws://" + api + "/api/v1";
@@ -343,3 +342,58 @@ function newMessage() {
     // json会出错
     ws.send(JSON.stringify(msgData));
 }
+
+
+// ===========================================
+// 添加好友
+// ===========================================
+
+// 添加好友
+// 用户搜索
+$("#searchFriend").on("keydown", function (e) {
+    if (e.which === 13) {
+        // 获取内容
+        const content = $("#searchFriend input").val();
+        if ($.trim(content) === '') {
+            return false;
+        }
+
+        // 请求数据
+        // 用户id
+        const uid = Cookies.get("uid")
+
+        // 请求数据
+        $.ajax({
+            url: myApi + "/user/search",
+            method: "GET",
+            data: {
+                every: "all",
+                // 关键字搜索
+                key: content,
+            },
+            success: function (res) {
+                if (res.status === 200) {
+                    // 修改数据
+                    // 通过模板引擎渲染数据
+
+                    res.data.forEach(
+                        function (val) {
+                            val.headimg = myApi + "/" + val.headimg;
+                        }
+                    );
+
+                    if (res.data.length === 0) {
+                        // 清除数据
+                        $("#contact").empty();
+                    }
+
+                    // 渲染数据
+                    $("#friends").html($("#userList").render(res.data.userList))
+
+                } else {
+                    confirm(res.msg)
+                }
+            }
+        })
+    }
+});

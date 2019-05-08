@@ -3,7 +3,7 @@ k8s 使用
 - 步骤  
 1.[k8s安装步骤](https://zhuanlan.zhihu.com/p/46341911)  
 2.[k8s面板安装](https://www.jianshu.com/p/7ad86c485f49)  
-3.执行上级目录  
+3.执行上级目录./pullAll.sh拉取镜像  
 n.....
 
 - k8s文件  

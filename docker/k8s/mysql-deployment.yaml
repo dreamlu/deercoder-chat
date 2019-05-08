@@ -32,7 +32,7 @@ spec:
           value: dreamlu
         - name: TZ
           value: Asia/Shanghai
-        image: mysql
+        image: mysql:5.7
         name: d-mysql
         ports:
         - containerPort: 3306

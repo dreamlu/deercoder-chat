@@ -10,8 +10,15 @@ metadata:
   name: mysql
 spec:
   ports:
-  - name: "3308"
-    port: 3308
+  - name: "3306"
+    # 这里改写了kompose生成的端口3308
+    # k8s用 3306 替换 3308
+    # 这里与docker-compose 概念不同
+    # k8s集群内部访问端口, 也是配置文件的mysql连接端口
+    # 区别：
+    ## docker-compose 时配置文件的mysql连接端口依据targetPort对应
+    ## k8s 时配置文件的mysql连接端口依据port端口
+    port: 3306
     targetPort: 3306
     # mysql 对外暴露33060端口
     nodePort: 30060

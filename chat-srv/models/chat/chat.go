@@ -8,6 +8,7 @@ import (
 	"github.com/dreamlu/deercoder-gin/util/lib"
 	"github.com/dreamlu/go.uuid"
 	"strings"
+	"time"
 )
 
 // Define our message object,teacher message model
@@ -64,12 +65,12 @@ func DistributeGroup(uids string) (groupId string, err error) {
 	userids := strings.Split(uids, ",")
 	//唯一群id
 	groupId = uuid.NewV1().String()
-	sql := "insert `group_users`(group_id, uid) value"
+	sql := "insert `group_users`(group_id, uid, create_time) value"
 	for _, v := range userids {
 		if v == "" {
 			continue
 		}
-		sql += "('" + groupId + "'," + v + "),"
+		sql += "('" + groupId + "'," + v + "'," + time.Now().Format("2006-01-02 15:04:05") + "'),"
 	}
 	sql = string([]byte(sql)[:len(sql)-1])
 
