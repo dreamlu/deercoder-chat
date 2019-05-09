@@ -28,11 +28,13 @@ n....
 - 好友列表(will like this)
 ![好友列表](common-srv/static/img/chat.png)  
 
+- 添加好友  
+![添加好友](common-srv/static/img/addFriend.png)  
+
 - 开发/部署(待优化)  
-1.修改各个模块下conf文件下app.conf中`devMode = xxx`  
-2.修改[chat.js](api-gateway/static/js/chat.js)配置文件首行api接口地址  
-3.本地直接进行开发即可  
-4.docker部署先执行每个模块下docker.sh命令  
-5.docker目录下pushAll.sh脚本推向私有或共有仓库  
-6.服务器上执行docker目录下pullAll.sh脚本, 拉取镜像  
-7.docker-compose/k8s部署参考docker目录  
+1.开发模式修改执行[devMode.sh](devMode.sh)文件    
+2.本地直接进行开发即可  
+3.docker部署先执行每个模块下docker.sh命令  
+4.docker目录下pushAll.sh脚本推向私有或共有仓库  
+5.服务器上执行docker目录下pullAll.sh脚本, 拉取镜像  
+6.docker-compose/k8s部署参考docker目录  

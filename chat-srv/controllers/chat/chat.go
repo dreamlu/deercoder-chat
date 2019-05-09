@@ -4,7 +4,6 @@ import (
 	"context"
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
-	"errors"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -43,13 +42,14 @@ func (e *Streamer) Stream(ctx context.Context, stream proto.Streamer_StreamStrea
 
 // 创建群聊
 func (c *ChatService) DistributeGroup(ctx context.Context, req *proto.UidS, rsp *proto.Response) error {
-	uids := req.Uids
-	gid, _ := chat.DistributeGroup(uids)
+	gid, err := chat.DistributeGroup(req.Uids)
 	if gid == "" {
-		return errors.New("群聊创建失败")
+		return err
 	}
-	rsp.Message.GroupId = gid
-	return nil
+	rsp.Message = &proto.Message{
+		GroupId:gid,
+	}
+	return err
 }
 
 // 拉取群聊所有消息

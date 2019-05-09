@@ -187,7 +187,7 @@ $("#search").on("keydown", function (e) {
 
         // 请求数据
         // 用户id
-        const uid = Cookies.get("uid")
+        const uid = Cookies.get("uid");
 
         // 请求数据
         $.ajax({
@@ -348,9 +348,9 @@ function newMessage() {
 // 添加好友
 // ===========================================
 
-// 添加好友
 // 用户搜索
 $("#searchFriend").on("keydown", function (e) {
+    //alert($("#searchFriend input").val());
     if (e.which === 13) {
         // 获取内容
         const content = $("#searchFriend input").val();
@@ -388,7 +388,7 @@ $("#searchFriend").on("keydown", function (e) {
                     }
 
                     // 渲染数据
-                    $("#friends").html($("#userList").render(res.data.userList))
+                    $("#friends").html($("#addUserList").render(res.data))
 
                 } else {
                     confirm(res.msg)
@@ -397,3 +397,29 @@ $("#searchFriend").on("keydown", function (e) {
         })
     }
 });
+
+// 添加好友
+// 群聊创建
+function disGroup(friendId) {
+
+    var uids = friendId;
+    uids += "," + Cookies.get("uid");
+    //alert(uids);
+    // 请求数据
+    $.ajax({
+        url: myApi + "/chat/disGroup",
+        method: "POST",
+        data: {
+            uids: uids,
+        },
+        success: function (res) {
+            if (res.status === 200) {
+                // 修改数据
+                // 通过模板引擎渲染数据
+
+            } else {
+                confirm(res.msg)
+            }
+        }
+    })
+}

@@ -943,6 +943,8 @@
 
 
 
+
+
             </script>
         </div>
         <div id="search">
@@ -974,7 +976,7 @@
         </div>
         <div id="bottom-bar">
             <button id="addcontact" data-toggle="modal" data-target="#friend"><i class="fa fa-user-plus fa-fw"
-                                                                                    aria-hidden="true"></i>
+                                                                                 aria-hidden="true"></i>
                 <span>添加好友</span>
             </button>
             <button id="settings"><i class="fa fa-cog fa-fw" aria-hidden="true"></i> <span>设置</span></button>
@@ -996,10 +998,6 @@
             <img src="{{:headimg}}" alt="">
             <p>{{:name}}</p>
             <p class="groupId" hidden="true">{{:groupId}}</p>
-
-
-
-
         </script>
         <div class="messages">
             <ul>
@@ -1051,15 +1049,30 @@
                         <ul id="friends">
                         </ul>
 
+                        <script type="text/x-jsrender" id="addUserList">
+                            {{for #data}}
+                            <li class="userList">
+                               <div class="userContent">
+                                    <img src="{{:headimg}}" alt="" class="headimg">
+                                    <div class="meta">
+                                        <p class="name">{{:name}}</p>
+                                        <p class="preview">{{:introduce}}</p>
+                                        <button id="disGroup" onclick="disGroup({{:id}})" class="btn btn-small">添加</button>
+                                    </div>
+
+                                </div>
+                            </li>
+                            {{/for}}
+                        </script>
                     </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">关闭
                 </button>
-                <button type="button" class="btn btn-primary">
+                <!-- button type="button" class="btn btn-primary">
                     完成
-                </button>
+                </button -->
             </div>
         </div><!-- /.modal-content -->
     </div><!-- /.modal -->
@@ -1146,4 +1159,36 @@
         padding: 7px;
         width: calc(100% - 43px);
     }
+
+    #friends img {
+        width: 40px;
+        border-radius: 50%;
+        float: left;
+        margin-right: 10px;
+    }
+
+    .userContent {
+        margin-top: 7px;
+        height: 45px;
+    }
+
+    #friends button {
+        position: absolute;
+        font-size: 12px;
+        right: 0;
+        line-height: 10px;
+        top: 0;
+        /* bottom: 0; */
+        /* margin: auto; */
+        margin-top: 7px;
+        /* position: relative; */
+    }
+    .userContent .meta p {
+        padding: 8px 0;
+    }
+
+    li.userList {
+        position: relative;
+    }
+
 </style>

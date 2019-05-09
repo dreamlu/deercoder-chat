@@ -62,6 +62,18 @@ func DistributeGroup(uids string) (groupId string, err error) {
 		return "", nil
 	}
 
+	// 判断是否已经是好友
+	groupUserSql := `select (count(*) > 1) as num 
+					from group_users a 
+					where uid in (`+uids+`) 
+					group by a.group_id
+					having num = 1`
+	res := deercoder.ValidateSQL(groupUserSql)
+	if res == lib.MapValSuccess {
+		return "", errors.New("好友已存在")
+	}
+
+
 	userids := strings.Split(uids, ",")
 	//唯一群id
 	groupId = uuid.NewV1().String()
@@ -70,7 +82,7 @@ func DistributeGroup(uids string) (groupId string, err error) {
 		if v == "" {
 			continue
 		}
-		sql += "('" + groupId + "'," + v + "'," + time.Now().Format("2006-01-02 15:04:05") + "'),"
+		sql += "('" + groupId + "'," + v + ",'" + time.Now().Format("2006-01-02 15:04:05") + "'),"
 	}
 	sql = string([]byte(sql)[:len(sql)-1])
 
