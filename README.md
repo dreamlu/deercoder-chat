@@ -25,16 +25,21 @@ n....
 - 登录  
 ![登录页面](common-srv/static/img/login.png)  
 
-- 好友列表(will like this)
-![好友列表](common-srv/static/img/chat.png)  
+- 好友列表以及聊天(图片上传)  
+![好友列表](common-srv/static/img/fileUpLoad.png)  
 
 - 添加好友  
 ![添加好友](common-srv/static/img/addFriend.png)  
 
-- 开发/部署(待优化)  
-1.开发模式修改执行[devMode.sh](devMode.sh)文件    
-2.本地直接进行开发即可  
-3.docker部署先执行每个模块下docker.sh命令  
-4.docker目录下pushAll.sh脚本推向私有或共有仓库  
-5.服务器上执行docker目录下pullAll.sh脚本, 拉取镜像  
-6.docker-compose/k8s部署参考docker目录  
+- 开发/部署  
+执行[devMode.sh](devMode.sh)脚本,修改开发模式  
+
+- 本地开发  
+1.运行consul服务发现    
+2.各个模块下`./run.sh `    
+
+- docker部署  
+1.各个模块下`./docker.sh`打包镜像  
+2.docker目录下pushAll.sh脚本推向私有或共有仓库  
+3.服务器上执行docker目录下pullAll.sh脚本, 拉取镜像  
+4.docker-compose/k8s部署参考docker目录  

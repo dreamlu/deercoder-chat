@@ -59,7 +59,7 @@ func DistributeGroup(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -78,7 +78,7 @@ func GetAllGroupMsg(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -99,7 +99,7 @@ func GetGroupLastMsg(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -120,7 +120,7 @@ func ReadGroupLastMsg(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
@@ -136,7 +136,7 @@ func GetUserList(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
@@ -154,7 +154,7 @@ func GetUserSearchList(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
@@ -170,7 +170,7 @@ func GetGroupUser(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
@@ -186,7 +186,7 @@ func GetGroupUser(u *gin.Context) {
 //	})
 //
 //	if err != nil {
-//		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+//		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 //		return
 //	}
 //	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))

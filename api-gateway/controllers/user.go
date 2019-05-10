@@ -29,7 +29,7 @@ func (p *UserService) GetByID(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -54,7 +54,7 @@ func (p *UserService) GetBySearch(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -76,7 +76,7 @@ func (p *UserService) Delete(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -96,7 +96,7 @@ func (p *UserService) Update(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 
@@ -116,7 +116,7 @@ func (p *UserService) Create(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 

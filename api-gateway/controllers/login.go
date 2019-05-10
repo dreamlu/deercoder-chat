@@ -37,7 +37,7 @@ func (p *LoginService) Login(u *gin.Context) {
 			return
 		}
 
-		u.JSON(http.StatusInternalServerError, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
 		return
 	}
 

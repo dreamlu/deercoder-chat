@@ -51,6 +51,9 @@ function myInfo() {
 
                 // 存储个人数据
                 Cookies.set("myInfo", res.data)
+
+                // 绑定点击个人数据展示修改页面
+
             }
         }
     })
@@ -152,6 +155,8 @@ $("#contact").on("click", ".contact", function () {
         ws.onopen = function () {
             // 拉取离线数据
 
+            // 绑定文件上传事件
+            setUpLoadFile();
         };
 
         // 接收数据
@@ -262,6 +267,23 @@ function setMsgContent(data) {
         // 数组
         data.forEach(
             function (val) {
+                // 聊天内容样式解析
+                // 文件类型
+                let fileType;
+                if (val.content_type === 'file') {
+                    // 文件具体类型
+                    fileType = val.content.split(".")[1];
+                    // 图片类型
+                    if (fileType === ("png" || "jpg" || "jpeg")) {
+                        val.content = '<img style="width: 200px; border-radius: 0;" src="' + myApi + "/" + val.content + '" alt="文件内容" />';
+                    }
+                    // 其他文件下载类型
+                    // 待完善, 有兴趣的可以完善
+                    // 显示文件名, 下载按钮
+                    // 可利用content字段组合文件链接
+                    // 解析显示下载文件
+                }
+
                 // 判断是否为当前用户
                 // 获取个人信息
                 const myInfo = JSON.parse(Cookies.get("myInfo"));
@@ -278,6 +300,18 @@ function setMsgContent(data) {
             }
         );
         return
+    }
+
+    // 聊天内容样式解析
+    // 文件类型
+    let fileType;
+    if (data.content_type === 'file') {
+        // 文件具体类型
+        fileType = data.content.split(".")[1];
+        // 图片类型
+        if (fileType === ("png" || "jpg" || "jpeg")) {
+            data.content = '<img style="width: 200px; border-radius: 0;" src="' + myApi + "/" + data.content + '" alt="文件内容" />';
+        }
     }
 
     // 判断是否为当前用户
@@ -341,6 +375,72 @@ function newMessage() {
     // 发送体必须为string
     // json会出错
     ws.send(JSON.stringify(msgData));
+}
+
+// 文件类型
+// 组成消息体
+// 发送聊天消息
+function newMessageFile(filePath) {
+
+    // 获取个人信息
+    const myInfo = JSON.parse(Cookies.get("myInfo"));
+
+    // 群聊id
+    groupId = $("#groupUser").find(".groupId").text();
+
+    // 发送消息体
+    msgData = {
+        name: myInfo.name,
+        headimg: myInfo.headimg,
+        content: filePath,
+        //测试
+        group_id: groupId,
+        from_uid: myInfo.id,
+        content_type: "file"
+
+    };
+
+    // ws消息发送
+    // 发送数据
+    console.log(msgData);
+    // 发送体必须为string
+    // json会出错
+    ws.send(JSON.stringify(msgData));
+}
+
+// 聊天内容
+// 文件类型
+function setUpLoadFile(){
+    // 聊天内容
+    // 文件类型
+    $("#fileUp").after('<input type="file" id="upLoadFile" name="file" style="display:none" onchange ="uploadFile()">');
+    $("#fileUp").click(function () {
+        // 点击上传
+        document.getElementById("upLoadFile").click();
+    });
+}
+
+// 文件上传
+function uploadFile() {
+    var myform = new FormData();
+    myform.append('file', $('#upLoadFile')[0].files[0]);
+    $.ajax({
+        url: myApi + "/file/upload",
+        type: "POST",
+        data: myform,
+        contentType: false,
+        processData: false,
+        success: function (res) {
+            //console.log(res);
+            // 文件上传成功
+            if(res.status === 224){
+                //return res.path;
+                // 发送文件类型消息
+                newMessageFile(res.path);
+            }
+        }
+    });
+    return null;
 }
 
 
@@ -418,8 +518,11 @@ function disGroup(friendId) {
                 // 通过模板引擎渲染数据
 
             } else {
-                confirm(res.msg)
+                if (res.data === "好友已存在") {
+                    confirm(res.data)
+                }
             }
         }
     })
 }
+

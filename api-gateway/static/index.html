@@ -72,6 +72,7 @@
     } catch (e) {
     }</script>
 <link rel="stylesheet prefetch" href="chat_config/reset.min.css">
+<link rel="stylesheet prefetch" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.2/css/font-awesome.min.css">
 <style class="cp-pen-styles">
     body {
         display: flex;
@@ -940,11 +941,6 @@
                 <input name="twitter" type="text" value="mike.ross">
                     </div>
                     </div>
-
-
-
-
-
             </script>
         </div>
         <div id="search">
@@ -1018,7 +1014,7 @@
         <div class="message-input">
             <div class="wrap">
                 <input type="text" placeholder="发送消息...">
-                <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
+                <i id="fileUp" class="fa fa-paperclip attachment" aria-hidden="true"></i>
                 <button class="submit"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
             </div>
         </div>
@@ -1085,7 +1081,7 @@
 <script src="js/js.cookie.min.js"></script>
 <script src="js/chat.js"></script>
 
-<!--script>
+<!-- script>
     $(".messages").animate({scrollTop: $(document).height()}, "fast");
 
     $("#profile-img").click(function () {
@@ -1144,8 +1140,6 @@
     });
     //# sourceURL=pen.js
 </script -->
-<script type="text/javascript">
-</script>
 
 </body>
 </html>
@@ -1178,10 +1172,7 @@
         right: 0;
         line-height: 10px;
         top: 0;
-        /* bottom: 0; */
-        /* margin: auto; */
         margin-top: 7px;
-        /* position: relative; */
     }
     .userContent .meta p {
         padding: 8px 0;
@@ -1190,5 +1181,6 @@
     li.userList {
         position: relative;
     }
+
 
 </style>

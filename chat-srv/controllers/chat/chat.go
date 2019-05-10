@@ -54,9 +54,8 @@ func (c *ChatService) DistributeGroup(ctx context.Context, req *proto.UidS, rsp 
 
 // 拉取群聊所有消息
 func (c *ChatService) GetAllGroupMsg(ctx context.Context, req *proto.Request, rsp *proto.ArrayMessage) error {
-	group_id := req.Message.GroupId
 
-	msg, err := chat.GetAllGroupMsg(group_id)
+	msg, err := chat.GetAllGroupMsg(req.Message.GroupId)
 	if err != nil {
 		return err
 	}
@@ -66,10 +65,8 @@ func (c *ChatService) GetAllGroupMsg(ctx context.Context, req *proto.Request, rs
 
 // 拉取离线信息
 func (c *ChatService) GetGroupLastMsg(ctx context.Context, req *proto.Request, rsp *proto.ArrayMessage) error {
-	group_id := req.Message.GroupId
-	uid := req.Message.FromUid
 
-	msg, err := chat.GetGroupLastMsg(group_id, uid)
+	msg, err := chat.GetGroupLastMsg(req.Message.GroupId, req.Message.FromUid)
 	if err != nil {
 		return err
 	}
