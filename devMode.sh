@@ -4,14 +4,17 @@
 # 此处修改模式
 # 执行该脚本
 # dev模式
+# 前后端api接口地址
 devMode=dev
-# 前端api接口地址
 api=localhost:8006
+httpProtocol=http
+wsProtocol=ws
 
 # prod模式
 #devMode=prod
-#api=47.94.8.188:30006
-
+#api=chat.deercoder.com
+#httpProtocol=https
+#wsProtocol=wss
 
 # 后端配置文件地址
 # 修改各个模块下app.conf文件开发模式
@@ -30,3 +33,5 @@ done
 
 # 前端api修改
 sed -i '2c var api = "'${api}'";' ${apiFile}
+sed -i '3c var httpProtocol = "'${httpProtocol}'";' ${apiFile}
+sed -i '4c var wsProtocol = "'${wsProtocol}'";' ${apiFile}

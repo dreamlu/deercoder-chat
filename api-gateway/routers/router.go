@@ -7,7 +7,9 @@ import (
 	"github.com/dreamlu/deercoder-gin/util/file"
 	"github.com/dreamlu/deercoder-gin/util/lib"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/common/log"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
@@ -18,7 +20,7 @@ func SetRouter() *gin.Engine {
 	deercoder.MaxUploadMemory = router.MaxMultipartMemory
 	//router.Use(CorsMiddleware())
 
-	//router.Use(CheckLogin()) //简单登录验证
+	router.Use(CheckLogin()) //简单登录验证
 
 	// load the casbin model and policy from files, database is also supported.
 	//权限中间件
@@ -82,17 +84,44 @@ func SetRouter() *gin.Engine {
 /*登录失效验证*/
 func CheckLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//小程序端
-		if c.Request.Header.Get("Authorization") == "wechat" {
+
+		// 忽略路径
+		paths := []string{"/login", "/static"}
+
+		// url
+		path := c.Request.URL.String()
+
+		for _, v := range paths {
+			if strings.Contains(path, v) {
+				return
+			}
+		}
+
+		// 缓存验证
+		var cache deercoder.CacheManager = new(deercoder.RedisManager)
+		//cacheModel := deercoder.CacheModel{}
+		// redis 存储用户信息
+		uid, err := c.Cookie("uid")
+		if err != nil {
+			c.Abort()
+			c.JSON(http.StatusOK, lib.MapNoAuth)
+		}
+		// key 的类型需要匹配
+		// 这里只是简单验证
+		// 可做些身份权限等验证
+		uidInt64, err := strconv.ParseInt(uid, 10, 64)
+		if err != nil {
+			log.Info("[路由错误]:", err.Error())
 			return
 		}
-		path := c.Request.URL.String()
-		if !strings.Contains(path, "login") && !strings.Contains(path, "/static") {
-			_, err := c.Cookie("uid")
-			if err != nil {
-				c.Abort()
-				c.JSON(http.StatusOK, lib.MapNoAuth)
-			}
+		cacheModel, err := cache.Get(uidInt64)
+		if err != nil {
+			log.Info("[路由错误]:", err.Error())
+			return
+		}
+		if cacheModel.Data == nil {
+			c.Abort()
+			c.JSON(http.StatusOK, lib.MapNoAuth)
 		}
 	}
 }

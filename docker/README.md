@@ -7,7 +7,7 @@ n...
 #### docker/docker-compose支持  
 
 - docker测试  
-1.修改conf下app.conf中devMode = dev 为prod  
+1.执行主目录下devMode.sh修改开发模式为prod
 2.运行上级目录下docker.sh  
 3.docker-compose 运行(问题参考下面)   
 

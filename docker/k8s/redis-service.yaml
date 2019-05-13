@@ -10,8 +10,8 @@ metadata:
   name: redis
 spec:
   ports:
-  - name: "6378"
-    port: 6378
+  - name: "6379"
+    port: 6379
     targetPort: 6379
   selector:
     io.kompose.service: redis

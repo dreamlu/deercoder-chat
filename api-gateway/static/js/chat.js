@@ -1,7 +1,9 @@
 // api地址等信息
 var api = "localhost:8006";
-var myApi = "http://" + api + "/api/v1";
-var myWsApi = "ws://" + api + "/api/v1";
+var httpProtocol = "http";
+var wsProtocol = "ws";
+var myApi = httpProtocol + "://" + api + "/api/v1";
+var myWsApi = wsProtocol + "://" + api + "/api/v1";
 
 // 登陆
 function login() {

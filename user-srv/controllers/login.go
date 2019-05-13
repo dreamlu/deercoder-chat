@@ -18,29 +18,29 @@ type LoginService struct{}
 
 //登录
 func (p *LoginService) Login(ctx context.Context, req *user.LoginModel, rsp *user.LoginModel) error {
-	var user LoginModel
+	var login LoginModel
 	var sql string
 
 	name := req.Name
 	password := req.Password
 
 	sql = "SELECT id,password FROM `user` WHERE name = ?"
-	dba := deercoder.DB.Raw(sql, name).Scan(&user)
+	dba := deercoder.DB.Raw(sql, name).Scan(&login)
 	num := dba.RowsAffected
 	if dba.Error == nil && num > 0 {
 		password = deercoder.AesEn(password)
-		if user.Password == password {
-			rsp.Id = user.ID
+		if login.Password == password {
+			rsp.Id = login.ID
+
+			var cache deercoder.CacheManager = new(deercoder.RedisManager)
+			//cacheModel := deercoder.CacheModel{}
+			// redis 存储用户信息
+			_ = cache.Set(login.ID, deercoder.CacheModel{
+				Time: 30 * 2 * 24, // 有效期 一天
+				Data: login.ID,
+			})
+
 			return nil
-			//strID := strconv.Itoa(user.ID)
-			//key := "-Iloveyouchinese"
-			//user_id, err := deercoder.Encrypt([]byte(strID + string([]byte(key)[:len(key)-len(strID)])))
-			//if err != nil {
-			//	fmt.Println("cookie加密错误Encrypt: ", err)
-			//	return
-			//}
-			//u.SetCookie("uid", string(user_id), 24*3600, "/", "*", false, true)
-			//info = map[string]interface{}{"status": lib.CodeSuccess, "msg": "请求成功", "uid": strconv.Itoa(user.ID)}
 		} else {
 			return errors.New(lib.MsgCountErr)
 		}
