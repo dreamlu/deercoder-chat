@@ -35,7 +35,13 @@ func main() {
 	// Create RESTful handler (using Gin)
 	// Register Handler
 	gin.SetMode(gin.DebugMode)
-	service.Handle("/", routers.SetRouter())
+	// 路由
+	router := routers.SetRouter()
+	// 后台配置
+	// 注释即可取消
+	//back.SetBack(router)
+	// 注册
+	service.Handle("/", router)
 
 	// Run server
 	if err := service.Run(); err != nil {

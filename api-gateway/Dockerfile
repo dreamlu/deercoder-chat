@@ -9,6 +9,7 @@ WORKDIR /app
 COPY conf /app/conf
 COPY main /app/
 COPY static /app/static
+# 后台模板静态资源文件
 
 EXPOSE 8006
 

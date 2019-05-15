@@ -148,6 +148,12 @@ $("#contact").on("click", ".contact", function () {
     // 拉取该群聊所有消息
     getAllMsg(groupId);
 
+    newWebSocket();
+
+});
+
+// 建立websocket
+function newWebSocket(){
     // 建立在线websocket即时通讯
     // 开始聊天
     if ("WebSocket" in window) {
@@ -155,6 +161,12 @@ $("#contact").on("click", ".contact", function () {
 
         // 建立ws连接
         ws.onopen = function () {
+
+            // 关闭之前的连接
+            //ws.close();
+
+            console.log("连接建立...");
+            heartCheck.reset().start();   // 成功建立连接后，重置心跳检测
             // 拉取离线数据
 
             // 绑定文件上传事件
@@ -163,6 +175,8 @@ $("#contact").on("click", ".contact", function () {
 
         // 接收数据
         ws.onmessage = function (res) {
+
+            heartCheck.reset().start(); // 如果获取到消息，说明连接是正常的，重置心跳检测
             // console.log("[receive data]: " + res.data);
             // 返回的数据json转换
             const data = JSON.parse(res.data);
@@ -173,14 +187,13 @@ $("#contact").on("click", ".contact", function () {
         // 连接关闭
         ws.onclose = function () {
             // 关闭 websocket
-            alert("连接已关闭...");
+            console.log("连接已关闭...");
         };
     } else {
         // 浏览器不支持 WebSocket
         alert("您的浏览器不支持 WebSocket!");
     }
-
-});
+}
 
 // 搜索好友
 // 回车搜索
@@ -528,3 +541,27 @@ function disGroup(friendId) {
     })
 }
 
+
+// 心跳检测, 每隔一段时间检测连接状态，如果处于连接中，就向server端主动发送消息，来重置server端与客户端的最大连接时间，如果已经断开了，发起重连。
+var heartCheck = {
+    timeout: 1000 * 60 * 9,        // 9分钟发一次心跳，比server端设置的连接时间稍微小一点，在接近断开的情况下以通信的方式去重置连接时间。
+    serverTimeoutObj: null,
+    reset: function(){
+        clearTimeout(this.timeoutObj);
+        clearTimeout(this.serverTimeoutObj);
+        return this;
+    },
+    start: function(){
+        var self = this;
+        this.serverTimeoutObj = setInterval(function(){
+            if(ws.readyState === 1){
+                console.log("连接状态，发送消息保持连接");
+                ws.send("ping");
+                heartCheck.reset().start();    // 如果获取到消息，说明连接是正常的，重置心跳检测
+            }else{
+                console.log("断开状态，尝试重连");
+                newWebSocket();
+            }
+        }, this.timeout)
+    }
+};

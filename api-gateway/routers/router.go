@@ -20,14 +20,15 @@ func SetRouter() *gin.Engine {
 	deercoder.MaxUploadMemory = router.MaxMultipartMemory
 	//router.Use(CorsMiddleware())
 
-	router.Use(CheckLogin()) //简单登录验证
+	//router.Use(CheckLogin()) //简单登录验证
 
 	// load the casbin model and policy from files, database is also supported.
 	//权限中间件
 	//e := casbin.NewEnforcer("conf/authz_model.conf", "conf/authz_policy.csv")
 	//router.Use(controllers.NewAuthorizer(e))
 
-	//静态目录
+	// 接口路由
+	// 静态目录
 	router.Static("api/v1/static", "static")
 
 	// Ping test
@@ -81,7 +82,7 @@ func SetRouter() *gin.Engine {
 	return router
 }
 
-/*登录失效验证*/
+// 登录验证
 func CheckLogin() gin.HandlerFunc {
 	return func(c *gin.Context) {
 

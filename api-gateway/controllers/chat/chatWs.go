@@ -3,6 +3,7 @@ package chat
 import (
 	"context"
 	"deercoder-chat/chat-srv/proto"
+	"encoding/json"
 	"github.com/dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
 	"log"
@@ -51,7 +52,14 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		// var msg chat.Message
 		// Read in a new message as JSON and map it to a Message object
 
-		err := ws.ReadJSON(&req.Message)
+		_, data, err := ws.ReadMessage()
+		//log.Printf("[消息类型]: %v", msgType)
+		log.Printf("[错误]: %v", err)
+		if string(data) == "ping" {
+			log.Printf("[心跳检测]: %v", string(data))
+			continue
+		}
+		err = json.Unmarshal(data, &req.Message) //ws.ReadJSON(&req.Message)
 		//log.Println("[消息内容]: ", req.Message)
 		if err != nil {
 			log.Printf("[错误]: %v", err)
@@ -78,7 +86,7 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		// use go-micro stream deal with the emessage
 		// Send request to stream server
 		// rpc service
-		// 消息写入
+		// 异步消息写入
 		go CreateGroupMsg(req)
 
 	}
@@ -131,9 +139,8 @@ func handleMessages() {
 	}
 }
 
-
 // 聊天记录创建
-func CreateGroupMsg(req proto.Request)  {
+func CreateGroupMsg(req proto.Request) {
 	_, err := ChatClient.CreateGroupMsg(context.TODO(), &req)
 	if err != nil {
 		log.Println("[错误]：", err)
