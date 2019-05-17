@@ -4,7 +4,7 @@ import (
 	"context"
 	"deercoder-chat/chat-srv/proto"
 	"encoding/json"
-	"github.com/dreamlu/go.uuid"
+	uuid "github.com/dreamlu/go.uuid"
 	"github.com/gorilla/websocket"
 	"log"
 	"net/http"
@@ -12,8 +12,8 @@ import (
 
 //客户端
 type Client struct {
-	GroupID string //标识客户端
-	UID     int64  //结合flag，唯一标识用户id
+	GroupID string // 标识客户端
+	UID     int64  // 唯一标识用户id
 	Conn    *websocket.Conn
 }
 
@@ -44,7 +44,7 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 	// go micro stream
 	// there is error
 	// always say can not find chat micro
-	//var stream 	proto.Streamer_ServerStreamService
+	// var stream 	proto.Streamer_ServerStreamService
 
 	//消息读取,每个客户端数据
 	for {
@@ -53,8 +53,11 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		// Read in a new message as JSON and map it to a Message object
 
 		_, data, err := ws.ReadMessage()
-		//log.Printf("[消息类型]: %v", msgType)
-		log.Printf("[错误]: %v", err)
+		//log.Printf("[消息内容]: %v", data)
+		if err != nil {
+			log.Printf("[错误-read]: %v", err)
+		}
+
 		if string(data) == "ping" {
 			log.Printf("[心跳检测]: %v", string(data))
 			continue
@@ -62,7 +65,7 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		err = json.Unmarshal(data, &req.Message) //ws.ReadJSON(&req.Message)
 		//log.Println("[消息内容]: ", req.Message)
 		if err != nil {
-			log.Printf("[错误]: %v", err)
+			log.Printf("[错误-read]: %v", err)
 			//delete(clients, ws) //删除对应连接
 			for _, v := range clients { //删除对应连接,emm...暂时先遍历删除～
 				//fmt.Println(v)
@@ -74,10 +77,18 @@ func WsHander(cli proto.StreamerService, ws *websocket.Conn) {
 		}
 		log.Println("[聊天测试]: ", req.Message)
 
-		//
-		req.Message.Uuid = uuid.NewV1().String()
+		// 消息体以及个人身份绑定
+		// 这部分有待抽取出去
+		// 后续完善
 		ct.GroupID = req.Message.GroupId //客户端唯一标识
 		ct.UID = req.Message.FromUid
+		// 个人身份绑定事件
+		if req.Message.Content == "" {
+			continue
+		}
+
+		// 消息唯一id
+		req.Message.Uuid = uuid.NewV1().String()
 		// Send the newly received message to the broadcast channel
 		broadcast <- req.Message
 
@@ -109,7 +120,7 @@ func handleMessages() {
 			err := client.Conn.WriteJSON(msg)
 			if err != nil { //当连接挂了
 				//fmt.Println("客户:",client,"聊天记录写入失败")
-				log.Printf("error: %v", err)
+				log.Printf("[错误-write]: %v", err)
 				client.Conn.Close()
 				clients = append(clients[:k], clients[k+1:]...)
 				////记录该用户最后读的消息id,广播中处理,待优化

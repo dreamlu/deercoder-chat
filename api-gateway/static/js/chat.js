@@ -148,25 +148,52 @@ $("#contact").on("click", ".contact", function () {
     // 拉取该群聊所有消息
     getAllMsg(groupId);
 
+    //
+    //ws.close();
+    // 建立新的连接
     newWebSocket();
 
 });
 
 // 建立websocket
 function newWebSocket(){
+
+    // 关闭之前的连接
+    if(ws !== undefined) {
+        ws.close();
+    }
+
+    ws = new WebSocket(myWsApi + "/chat/chatWs");
+
     // 建立在线websocket即时通讯
     // 开始聊天
     if ("WebSocket" in window) {
-        ws = new WebSocket(myWsApi + "/chat/chatWs");
+        //ws = new WebSocket(myWsApi + "/chat/chatWs");
 
         // 建立ws连接
         ws.onopen = function () {
 
-            // 关闭之前的连接
-            //ws.close();
-
             console.log("连接建立...");
             heartCheck.reset().start();   // 成功建立连接后，重置心跳检测
+
+            // 告诉后端我是谁
+            // 获取个人信息
+            const myInfo = JSON.parse(Cookies.get("myInfo"));
+
+            // 群聊id
+            groupId = $("#groupUser").find(".groupId").text();
+            msgData = {
+                name: "",
+                headimg: "",
+                content: "",
+                //测试
+                group_id: groupId,
+                from_uid: myInfo.id,
+                content_type: "text"
+
+            };
+            ws.send(JSON.stringify(msgData));
+
             // 拉取离线数据
 
             // 绑定文件上传事件
@@ -547,7 +574,7 @@ var heartCheck = {
     timeout: 1000 * 60 * 9,        // 9分钟发一次心跳，比server端设置的连接时间稍微小一点，在接近断开的情况下以通信的方式去重置连接时间。
     serverTimeoutObj: null,
     reset: function(){
-        clearTimeout(this.timeoutObj);
+        //clearTimeout(this.timeoutObj);
         clearTimeout(this.serverTimeoutObj);
         return this;
     },

@@ -1,4 +1,4 @@
-# 批量推向私有仓库
+# 批量推向私有仓库/这里是公有仓库
 #!/bin/bash
 docker images | grep registry.cn-hangzhou.aliyuncs.com/dreamlu/common | awk '{print "docker push "$1":"$2}' | sh
 
