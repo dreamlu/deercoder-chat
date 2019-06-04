@@ -6,7 +6,7 @@ import (
 	"github.com/chenhg5/go-admin/engine"
 	"github.com/chenhg5/go-admin/modules/config"
 	"github.com/chenhg5/go-admin/plugins/admin"
-	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/go-tool"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,17 +18,17 @@ func SetBack(router *gin.Engine) *gin.Engine {
 	cfg := config.Config{
 		DATABASE: []config.Database{
 			{
-				HOST:         deercoder.GetDevModeConfig("mysql.host"),
-				PORT:         deercoder.GetDevModeConfig("mysql.port"),
-				USER:         deercoder.GetDevModeConfig("db.user"),
-				PWD:          deercoder.GetDevModeConfig("db.password"),
-				NAME:         deercoder.GetDevModeConfig("db.name"),
+				HOST:         der.GetDevModeConfig("mysql.host"),
+				PORT:         der.GetDevModeConfig("mysql.port"),
+				USER:         der.GetDevModeConfig("db.user"),
+				PWD:          der.GetDevModeConfig("db.password"),
+				NAME:         der.GetDevModeConfig("db.name"),
 				MAX_IDLE_CON: 50,
 				MAX_OPEN_CON: 150,
 				DRIVER:       "mysql",
 			},
 		},
-		DOMAIN: deercoder.GetDevModeConfig("domain"), // 是cookie相关的，访问网站的域名
+		DOMAIN: der.GetDevModeConfig("domain"), // 是cookie相关的，访问网站的域名
 		PREFIX: "admin",
 		// STORE 必须设置且保证有写权限，否则增加不了新的管理员用户
 		STORE: config.Store{

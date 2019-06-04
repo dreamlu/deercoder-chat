@@ -3,7 +3,7 @@ package main
 import (
 	"deercoder-chat/chat-srv/controllers/chat"
 	"deercoder-chat/chat-srv/proto"
-	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/go-tool"
 	"github.com/hashicorp/consul/api"
 	"github.com/micro/go-micro"
 	"github.com/micro/go-micro/registry/consul"
@@ -15,8 +15,8 @@ func main() {
 	// registry
 	registry := consul.NewRegistry(consul.Config(
 		&api.Config{
-			Address: deercoder.GetDevModeConfig("consul.address"),
-			Scheme:  deercoder.GetDevModeConfig("consul.scheme"),
+			Address: der.GetDevModeConfig("consul.address"),
+			Scheme:  der.GetDevModeConfig("consul.scheme"),
 		}))
 
 	service := micro.NewService(
@@ -24,7 +24,7 @@ func main() {
 		micro.Registry(registry),
 		//micro.RegisterTTL(time.Second*30),
 		//micro.RegisterInterval(time.Second*10),
-		micro.Address(":"+deercoder.GetDevModeConfig("http_port")),
+		micro.Address(":"+der.GetDevModeConfig("http_port")),
 	)
 
 	// service init

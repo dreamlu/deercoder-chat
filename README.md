@@ -5,7 +5,7 @@ websocket IM
 - 特点  
 1.内部rpc  
 2.对外json  
-3.工具类：[deercoder-gin](https://github.com/dreamlu/deercoder-gin)  
+3.工具类：[go-tool](https://github.com/dreamlu/go-tool)  
 4.websocket即时通讯  
 5.[在线接口查看](https://www.eolinker.com/#/share/index?shareCode=jH4ISr)  
 6.[go micro](https://github.com/micro/go-micro) docker化, 具体见Dockerfile  

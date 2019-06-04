@@ -3,9 +3,9 @@ package routers
 import (
 	"deercoder-chat/api-gateway/controllers"
 	"deercoder-chat/api-gateway/controllers/chat"
-	"github.com/dreamlu/deercoder-gin"
-	"github.com/dreamlu/deercoder-gin/util/file"
-	"github.com/dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/go-tool"
+	"github.com/dreamlu/go-tool/util/file"
+	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/common/log"
 	"net/http"
@@ -17,7 +17,7 @@ func SetRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	router := gin.New()
-	deercoder.MaxUploadMemory = router.MaxMultipartMemory
+	der.MaxUploadMemory = router.MaxMultipartMemory
 	//router.Use(CorsMiddleware())
 
 	//router.Use(CheckLogin()) //简单登录验证
@@ -99,8 +99,8 @@ func CheckLogin() gin.HandlerFunc {
 		}
 
 		// 缓存验证
-		var cache deercoder.CacheManager = new(deercoder.RedisManager)
-		//cacheModel := deercoder.CacheModel{}
+		var cache der.CacheManager = new(der.RedisManager)
+		//cacheModel := der.CacheModel{}
 		// redis 存储用户信息
 		uid, err := c.Cookie("uid")
 		if err != nil {

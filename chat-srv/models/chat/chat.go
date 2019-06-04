@@ -4,8 +4,8 @@ import (
 	"deercoder-chat/chat-srv/proto"
 	"errors"
 	"fmt"
-	"github.com/dreamlu/deercoder-gin"
-	"github.com/dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/go-tool"
+	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/dreamlu/go.uuid"
 	"strings"
 	"time"
@@ -20,7 +20,7 @@ type Message struct {
 	Name        string             `json:"username"`     //用户名
 	Content     string             `json:"content"`      //消息内容
 	ContentType string             `json:"content_type"` //消息类型,文字'text',图片'img',2....
-	CreateTime  deercoder.JsonTime `json:"create_time"`  //创建时间
+	CreateTime  der.JsonTime `json:"create_time"`  //创建时间
 }
 
 // 群聊发送模型
@@ -30,7 +30,7 @@ type GroupMsg struct {
 	Content     int64              `json:"content"`      //消息内容
 	FromUid     int64              `json:"from_uid"`     //由谁发送
 	ContentType string             `json:"content_type"` //消息类型,文本'text'
-	CreateTime  deercoder.JsonTime `json:"create_time"`  //创建时间
+	CreateTime  der.JsonTime `json:"create_time"`  //创建时间
 }
 
 // 群聊最后记录
@@ -68,7 +68,7 @@ func DistributeGroup(uids string) (groupId string, err error) {
 					where uid in (`+uids+`) 
 					group by a.group_id
 					having num = 1`
-	res := deercoder.ValidateSQL(groupUserSql)
+	res := der.ValidateSQL(groupUserSql)
 	if res == lib.MapValSuccess {
 		return "", errors.New("好友已存在")
 	}
@@ -86,7 +86,7 @@ func DistributeGroup(uids string) (groupId string, err error) {
 	}
 	sql = string([]byte(sql)[:len(sql)-1])
 
-	dba := deercoder.DB.Exec(sql)
+	dba := der.DB.Exec(sql)
 	num := dba.RowsAffected
 
 	if num == 0 {
@@ -102,7 +102,7 @@ func CreateGroupMsg(msg *proto.Message) (err error) {
 
 	//需要id,用来每次聊天生成的id作为聊天记录id,以便群离线消息记录该id
 	sql := "insert `group_msg`(uuid, group_id, content, from_uid, content_type) value(?,?,?,?,?)"
-	dba := deercoder.DB.Exec(sql, msg.Uuid, msg.GroupId, msg.Content, msg.FromUid, msg.ContentType)
+	dba := der.DB.Exec(sql, msg.Uuid, msg.GroupId, msg.Content, msg.FromUid, msg.ContentType)
 
 	if dba.Error != nil {
 		return dba.Error
@@ -117,7 +117,7 @@ func CreateGroupLastMsg(group_id string, uid int64, last_group_msg_uuid string) 
 		return errors.New("用户gid不存在")
 	}
 	sql := "insert `group_last_msg`(group_id, uid, last_group_msg_uuid) value(?,?,?)"
-	dba := deercoder.DB.Exec(sql, group_id, uid, last_group_msg_uuid)
+	dba := der.DB.Exec(sql, group_id, uid, last_group_msg_uuid)
 
 	if dba.Error != nil {
 		return dba.Error
@@ -130,10 +130,10 @@ func CreateGroupLastMsg(group_id string, uid int64, last_group_msg_uuid string) 
 func GetAllGroupMsg(group_id string) ([]*proto.Message, error) {
 
 	//拉取该群聊的所有消息
-	sql := fmt.Sprintf("select %s from group_msg where group_id=?", deercoder.GetColSql(GroupMsg{}))
+	sql := fmt.Sprintf("select %s from group_msg where group_id=?", der.GetColSql(GroupMsg{}))
 	var msg []*proto.Message
 
-	deercoder.DB.Raw(sql, group_id).Scan(&msg)
+	der.DB.Raw(sql, group_id).Scan(&msg)
 
 	if len(msg) == 0 || msg[0].GroupId == "" {
 		return msg, errors.New("暂无离线消息")
@@ -141,7 +141,7 @@ func GetAllGroupMsg(group_id string) ([]*proto.Message, error) {
 	sql = "select name, headimg from `user` where id = ?"
 	for k, v := range msg { //查询对应的头像,用户名等信息
 
-		deercoder.DB.Raw(sql, v.FromUid).Scan(&msg[k])
+		der.DB.Raw(sql, v.FromUid).Scan(&msg[k])
 	}
 
 	return msg, nil
@@ -151,19 +151,19 @@ func GetAllGroupMsg(group_id string) ([]*proto.Message, error) {
 func GetGroupLastMsg(group_id string, uid int64) ([]*proto.Message, error) {
 
 	//1.找出群聊group_id中对应的最小的未读记录id
-	var value deercoder.Value
+	var value der.Value
 	sql2 := "select min(last_group_msg_uuid) as value from group_last_msg where is_read=0 and group_id=? and uid=?"
-	deercoder.DB.Raw(sql2, group_id, uid).Scan(&value)
+	der.DB.Raw(sql2, group_id, uid).Scan(&value)
 
 	if value.Value == "" {
 		return nil, errors.New("暂无离线消息")
 	}
 	//2.拉取离线后的该群聊的所有消息
-	sql := fmt.Sprintf("select %s from group_msg where group_id=? and id >= (select id from group_msg where uuid = ?)", deercoder.GetColSql(GroupMsg{}))
+	sql := fmt.Sprintf("select %s from group_msg where group_id=? and id >= (select id from group_msg where uuid = ?)", der.GetColSql(GroupMsg{}))
 
 	var msg []*proto.Message
 
-	deercoder.DB.Raw(sql, group_id, value.Value).Scan(&msg)
+	der.DB.Raw(sql, group_id, value.Value).Scan(&msg)
 
 	if len(msg) == 0 {
 
@@ -172,7 +172,7 @@ func GetGroupLastMsg(group_id string, uid int64) ([]*proto.Message, error) {
 	sql = "select name, headimg from `user` where id = ?"
 	for k, v := range msg { //查询对应的头像,用户名等信息
 
-		deercoder.DB.Raw(sql, v.FromUid).Scan(&msg[k])
+		der.DB.Raw(sql, v.FromUid).Scan(&msg[k])
 	}
 
 	return msg, nil
@@ -183,7 +183,7 @@ func ReadGroupLastMsg(group_id string, uid int64) (lib.MapData, error) {
 
 	var info lib.MapData
 	sql2 := "update `group_last_msg` set is_read=1 where is_read=0 and group_id=? and uid=?"
-	dba := deercoder.DB.Exec(sql2, group_id, uid)
+	dba := der.DB.Exec(sql2, group_id, uid)
 	num := dba.RowsAffected
 	if dba.Error != nil {
 		return info, dba.Error
@@ -216,8 +216,8 @@ func MassMessage(group_ids, send_uids, from_uid, content string) interface{} {
 
 	sql = string([]byte(sql)[:len(sql)-1])    //去,
 	sql2 = string([]byte(sql2)[:len(sql2)-1]) //去,
-	deercoder.DB.Exec(sql)
-	dba := deercoder.DB.Exec(sql2) //创建存储群聊消息
+	der.DB.Exec(sql)
+	dba := der.DB.Exec(sql2) //创建存储群聊消息
 
 	if dba.Error != nil {
 		return lib.GetSqlError(dba.Error.Error())
@@ -234,7 +234,7 @@ func GetUserList(uid int64) (users []*proto.ChatUser, err error) {
 			from ` + "`user`" + ` a inner join ` + "`group_users`" + ` b on a.id = b.uid 
 			where b.group_id in (select group_id from ` + "`group_users`" + ` where uid = ?) 
 			and a.id != ?`
-	dba := deercoder.DB.Raw(sql, uid, uid).Scan(&users)
+	dba := der.DB.Raw(sql, uid, uid).Scan(&users)
 	return users, dba.Error
 }
 
@@ -246,7 +246,7 @@ func GetUserSearchList(uid int64, name string) (users []*proto.ChatUser, err err
 			from ` + "`user`" + ` a inner join ` + "`group_users`" + ` b on a.id = b.uid 
 			where b.group_id in (select group_id from ` + "`group_users`" + ` where uid = ? and name like '%` + name + `%') 
 			and a.id != ?`
-	dba := deercoder.DB.Raw(sql, uid, uid).Scan(&users)
+	dba := der.DB.Raw(sql, uid, uid).Scan(&users)
 	return users, dba.Error
 }
 
@@ -254,6 +254,6 @@ func GetUserSearchList(uid int64, name string) (users []*proto.ChatUser, err err
 // 包含自己
 func GetGroupUser(group_id string, gusers []*proto.GroupUser) error {
 
-	dba := deercoder.DB.Raw("select id,group_id,uid from `group_users` where group_id = ?", group_id).Scan(&gusers)
+	dba := der.DB.Raw("select id,group_id,uid from `group_users` where group_id = ?", group_id).Scan(&gusers)
 	return dba.Error
 }

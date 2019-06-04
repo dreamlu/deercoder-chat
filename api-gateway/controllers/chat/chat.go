@@ -5,7 +5,7 @@ import (
 	"deercoder-chat/api-gateway/conf"
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
-	"github.com/dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
 	"log"

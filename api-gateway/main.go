@@ -3,7 +3,7 @@ package main
 import (
 	"deercoder-chat/api-gateway/back"
 	"deercoder-chat/api-gateway/routers"
-	"github.com/dreamlu/deercoder-gin"
+	"github.com/dreamlu/go-tool"
 	"github.com/gin-gonic/gin"
 	"github.com/hashicorp/consul/api"
 	"github.com/micro/go-micro/registry/consul"
@@ -20,15 +20,15 @@ func main() {
 	// registry
 	registry := consul.NewRegistry(consul.Config(
 		&api.Config{
-			Address: deercoder.GetDevModeConfig("consul.address"),
-			Scheme:  deercoder.GetDevModeConfig("consul.scheme"),
+			Address: der.GetDevModeConfig("consul.address"),
+			Scheme:  der.GetDevModeConfig("consul.scheme"),
 		}))
 
 	// Create service
 	service := web.NewService(
 		web.Name("deercoder-chat.api"),
 		web.Registry(registry),
-		web.Address(":"+deercoder.GetDevModeConfig("http_port")),
+		web.Address(":"+der.GetDevModeConfig("http_port")),
 	)
 
 	_ = service.Init()

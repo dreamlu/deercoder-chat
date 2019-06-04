@@ -4,7 +4,7 @@ import (
 	"context"
 	"deercoder-chat/api-gateway/conf"
 	"deercoder-chat/user-srv/proto"
-	"github.com/dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
 	"net/http"

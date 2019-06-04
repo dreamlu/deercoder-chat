@@ -4,8 +4,8 @@ import (
 	"context"
 	user "deercoder-chat/user-srv/proto"
 	"errors"
-	"github.com/dreamlu/deercoder-gin"
-	"github.com/dreamlu/deercoder-gin/util/lib"
+	"github.com/dreamlu/go-tool"
+	"github.com/dreamlu/go-tool/util/lib"
 )
 
 type LoginModel struct {
@@ -25,17 +25,17 @@ func (p *LoginService) Login(ctx context.Context, req *user.LoginModel, rsp *use
 	password := req.Password
 
 	sql = "SELECT id,password FROM `user` WHERE name = ?"
-	dba := deercoder.DB.Raw(sql, name).Scan(&login)
+	dba := der.DB.Raw(sql, name).Scan(&login)
 	num := dba.RowsAffected
 	if dba.Error == nil && num > 0 {
-		password = deercoder.AesEn(password)
+		password = der.AesEn(password)
 		if login.Password == password {
 			rsp.Id = login.ID
 
-			var cache deercoder.CacheManager = new(deercoder.RedisManager)
-			//cacheModel := deercoder.CacheModel{}
+			var cache der.CacheManager = new(der.RedisManager)
+			//cacheModel := der.CacheModel{}
 			// redis 存储用户信息
-			_ = cache.Set(login.ID, deercoder.CacheModel{
+			_ = cache.Set(login.ID, der.CacheModel{
 				Time: 30 * 2 * 24, // 有效期 一天
 				Data: login.ID,
 			})
