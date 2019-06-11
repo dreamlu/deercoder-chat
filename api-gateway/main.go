@@ -1,13 +1,12 @@
 package main
 
 import (
-	"deercoder-chat/api-gateway/back"
 	"deercoder-chat/api-gateway/routers"
 	"github.com/dreamlu/go-tool"
 	"github.com/gin-gonic/gin"
 	"github.com/hashicorp/consul/api"
 	"github.com/micro/go-micro/registry/consul"
-	"github.com/micro/go-web"
+	"github.com/micro/go-micro/web"
 	"log"
 )
 
@@ -40,7 +39,7 @@ func main() {
 	router := routers.SetRouter()
 	// 后台配置
 	// 注释即可取消
-	back.SetBack(router)
+	//back.SetBack(router)
 	// 注册
 	service.Handle("/", router)
 

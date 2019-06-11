@@ -27,6 +27,9 @@ func main() {
 		micro.Address(":"+der.GetDevModeConfig("http_port")),
 	)
 
+	// start DB
+	der.NewDB()
+
 	// service init
 	service.Init()
 

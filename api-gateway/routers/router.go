@@ -3,8 +3,8 @@ package routers
 import (
 	"deercoder-chat/api-gateway/controllers"
 	"deercoder-chat/api-gateway/controllers/chat"
+	"deercoder-chat/api-gateway/controllers/file"
 	"github.com/dreamlu/go-tool"
-	"github.com/dreamlu/go-tool/util/file"
 	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/common/log"
