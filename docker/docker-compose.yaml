@@ -15,16 +15,7 @@ services:
 
   # mysql-server
   mysql:
-    build:
-      context: ./mysql
-      dockerfile: Dockerfile
-      args:
-        MYSQL_VERSION: 5.7
-        # 账号密码同下环境变量值
-        MYSQL_DATABASE: deercoder-chat
-        MYSQL_USER: dreamlu
-        MYSQL_PASSWORD: dreamlu
-        MYSQL_ROOT_PASSWORD: dreamlu
+    image: mysql:5.7
     #command:
     #privileged: true
     container_name: d-mysql

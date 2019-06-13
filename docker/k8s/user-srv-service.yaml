@@ -1,12 +1,8 @@
 apiVersion: v1
 kind: Service
 metadata:
-  annotations:
-    kompose.cmd: ./kompose convert -f ../docker-compose.yaml
-    kompose.version: 1.16.0 (0c01309)
-  creationTimestamp: null
   labels:
-    io.kompose.service: user-srv
+    app: user-srv
   name: user-srv
 spec:
   ports:
@@ -14,6 +10,4 @@ spec:
     port: 8000
     targetPort: 8000
   selector:
-    io.kompose.service: user-srv
-status:
-  loadBalancer: {}
+    app: user-srv

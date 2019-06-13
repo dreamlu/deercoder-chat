@@ -14,9 +14,7 @@ import (
 
 func main() {
 
-	// k8s
-	// k8s := kubernetes
-	// consul
+	//consul
 	registry := consul.NewRegistry(consul.Config(
 		&api.Config{
 			Address: der.GetDevModeConfig("consul.address"),
