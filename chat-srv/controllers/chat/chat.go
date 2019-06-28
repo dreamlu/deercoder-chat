@@ -5,6 +5,7 @@ import (
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
 	"github.com/gin-gonic/gin"
+	"io"
 	"log"
 	"net/http"
 )
@@ -26,6 +27,9 @@ func (e *Streamer) Stream(ctx context.Context, stream proto.Streamer_StreamStrea
 	for {
 		// Read from stream
 		req, err := stream.Recv()
+		if err == io.EOF {
+			return nil
+		}
 		if err != nil {
 			return err
 		}
@@ -47,7 +51,7 @@ func (c *ChatService) DistributeGroup(ctx context.Context, req *proto.UidS, rsp 
 		return err
 	}
 	rsp.Message = &proto.Message{
-		GroupId:gid,
+		GroupId: gid,
 	}
 	return err
 }
@@ -85,12 +89,12 @@ func (c *ChatService) ReadGroupLastMsg(ctx context.Context, req *proto.Request, 
 }
 
 // 获取群聊中用户列表
-func (c * ChatService) GetGroupUser(ctx context.Context, req *proto.GroupUser, rsp *proto.GUserResponse) error {
+func (c *ChatService) GetGroupUser(ctx context.Context, req *proto.GroupUser, rsp *proto.GUserResponse) error {
 	return chat.GetGroupUser(req.GroupId, rsp.GroupUser)
 }
 
 // 获取用户好友列表
-func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp *proto.UserList) (err error) {
+func (c *ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp *proto.UserList) (err error) {
 
 	//users := []*proto.ChatUser
 	rsp.UserList, err = chat.GetUserList(req.Id)
@@ -98,7 +102,7 @@ func (c * ChatService) GetUserList(ctx context.Context, req *proto.ChatUser, rsp
 }
 
 // 获取用户好友列表
-func (c * ChatService) GetUserSearchList(ctx context.Context, req *proto.ChatUserSearch, rsp *proto.UserList) (err error) {
+func (c *ChatService) GetUserSearchList(ctx context.Context, req *proto.ChatUserSearch, rsp *proto.UserList) (err error) {
 
 	//users := []*proto.ChatUser
 	rsp.UserList, err = chat.GetUserSearchList(req.Id, req.Name)

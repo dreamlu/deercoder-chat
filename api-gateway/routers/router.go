@@ -18,7 +18,7 @@ func SetRouter() *gin.Engine {
 	// gin.DisableConsoleColor()
 	router := gin.New()
 	der.MaxUploadMemory = router.MaxMultipartMemory
-	//router.Use(CorsMiddleware())
+	router.Use(Cors())
 
 	//router.Use(CheckLogin()) //简单登录验证
 
@@ -100,6 +100,7 @@ func CheckLogin() gin.HandlerFunc {
 
 		// 缓存验证
 		var cache der.CacheManager = new(der.RedisManager)
+		_ = cache.NewCache()
 		//cacheModel := der.CacheModel{}
 		// redis 存储用户信息
 		uid, err := c.Cookie("uid")
@@ -124,5 +125,25 @@ func CheckLogin() gin.HandlerFunc {
 			c.Abort()
 			c.JSON(http.StatusOK, lib.MapNoAuth)
 		}
+	}
+}
+
+// 处理跨域请求,支持options访问
+func Cors() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		method := c.Request.Method
+		//fmt.Println(method)
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Headers", "Content-Type,AccessToken,X-CSRF-Token, Authorization, Token")
+		c.Header("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, PATCH, DELETE")
+		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+		c.Header("Access-Control-Allow-Credentials", "true")
+
+		// 放行所有OPTIONS方法，因为有的模板是要请求两次的
+		if method == "OPTIONS" {
+			c.AbortWithStatus(http.StatusNoContent)
+		}
+		// 处理请求
+		c.Next()
 	}
 }

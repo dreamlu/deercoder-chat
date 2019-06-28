@@ -9,9 +9,11 @@ require (
 	github.com/golang/protobuf v1.3.1
 	github.com/gorilla/websocket v1.4.0
 	github.com/hashicorp/consul/api v1.1.0
-	github.com/micro/go-micro v1.6.0
+	github.com/micro/cli v0.2.0
+	github.com/micro/go-micro v1.7.0
+	github.com/micro/micro v1.7.0
 	github.com/nats-io/nats-server/v2 v2.0.0 // indirect
-	github.com/prometheus/common v0.2.0
+	github.com/prometheus/common v0.6.0
 	github.com/ugorji/go v1.1.5-pre // indirect
 )
 

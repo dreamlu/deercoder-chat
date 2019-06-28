@@ -33,6 +33,7 @@ func (p *LoginService) Login(ctx context.Context, req *user.LoginModel, rsp *use
 			rsp.Id = login.ID
 
 			var cache der.CacheManager = new(der.RedisManager)
+			_ = cache.NewCache()
 			//cacheModel := der.CacheModel{}
 			// redis 存储用户信息
 			_ = cache.Set(login.ID, der.CacheModel{

@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-protoc --proto_path=$GOPATH/gowork/src:. --micro_out=. --go_out=. *.proto
+protoc --proto_path=${GOPATH}/gowork/work:. --micro_out=. --go_out=. *.proto

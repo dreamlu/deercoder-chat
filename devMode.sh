@@ -18,9 +18,9 @@ wsProtocol=ws
 
 # 后端配置文件地址
 # 修改各个模块下app.conf文件开发模式
-confFiles=(api-gateway/conf/app.conf chat-srv/conf/app.conf user-srv/conf/app.conf)
+confFiles=(api-gateway/conf/app.conf chat-srv/conf/app.conf user-srv/conf/app.conf front-srv/conf/app.conf)
 # 前端配置文件地址
-apiFile=api-gateway/static/js/chat.js
+apiFile=front-srv/static/js/chat.js
 
 # 后端conf配置修改
 for conf in ${confFiles[@]}

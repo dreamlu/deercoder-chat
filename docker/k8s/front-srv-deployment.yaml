@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: front-srv
+  name: front-srv
+spec:
+  replicas: 1
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: front-srv
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-front-srv
+        name: d-user
+        ports:
+        - containerPort: 3000
+        resources: {}
+      restartPolicy: Always
+  selector:
+    matchLabels:
+      app: front-srv

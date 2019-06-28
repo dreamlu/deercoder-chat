@@ -83,3 +83,9 @@ services:
       - 8001:8001
     container_name: d-chat
     restart: always
+  front-srv:
+    image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-front-srv
+      ports:
+        - 3000:3000
+      container_name: d-front
+      restart: always
