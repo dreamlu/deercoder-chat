@@ -1,9 +1,9 @@
 package routers
 
 import (
-	"deercoder-chat/api-gateway/controllers"
-	"deercoder-chat/api-gateway/controllers/chat"
-	"deercoder-chat/api-gateway/controllers/file"
+	"deercoder-chat/api/controllers"
+	"deercoder-chat/api/controllers/chat"
+	"deercoder-chat/api/controllers/file"
 	"github.com/dreamlu/go-tool"
 	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/gin-gonic/gin"
@@ -29,14 +29,14 @@ func SetRouter() *gin.Engine {
 
 	// 接口路由
 	// 静态目录
-	router.Static("api/v1/static", "static")
+	router.Static("v1/static", "static")
 
 	// Ping test
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "pong")
 	})
 	//组的路由,version
-	v1 := router.Group("/api/v1")
+	v1 := router.Group("/v1")
 	{
 		user := controllers.UserService{}
 		login := controllers.LoginService{}

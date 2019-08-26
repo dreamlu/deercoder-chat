@@ -2,7 +2,7 @@ package controllers
 
 import (
 	"context"
-	"deercoder-chat/api-gateway/conf"
+	"deercoder-chat/api/conf"
 	"deercoder-chat/user-srv/proto"
 	"github.com/dreamlu/go-tool/util/lib"
 	"github.com/gin-gonic/gin"

@@ -1,5 +1,7 @@
 k8s 使用  
 
+[如有必要, 请参考不同模块, 自行进行增加k8s文件修改]
+
 - 步骤  
 1.[k8s安装步骤](https://zhuanlan.zhihu.com/p/46341911)  
 2.[k8s面板安装](https://www.jianshu.com/p/7ad86c485f49)  

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"deercoder-chat/user-srv/controllers"
+	"deercoder-chat/user-srv/handler"
 	user "deercoder-chat/user-srv/proto"
 	"github.com/dreamlu/go-tool"
 	"github.com/hashicorp/consul/api"
@@ -37,9 +37,9 @@ func main() {
 
 	// Register Handlers
 	// user register
-	_ = user.RegisterUserServiceHandler(service.Server(), new(controllers.UserService))
+	_ = user.RegisterUserServiceHandler(service.Server(), new(handler.UserService))
 	// login register
-	_ = user.RegisterLoginServiceHandler(service.Server(), new(controllers.LoginService))
+	_ = user.RegisterLoginServiceHandler(service.Server(), new(handler.LoginService))
 
 	// run server
 	if err := service.Run(); err != nil {

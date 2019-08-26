@@ -1,50 +1,23 @@
 package main
 
 import (
-	"deercoder-chat/api-gateway/routers"
-	"github.com/dreamlu/go-tool"
-	"github.com/gin-gonic/gin"
-	"github.com/hashicorp/consul/api"
-	"github.com/micro/go-micro/registry/consul"
-	"github.com/micro/go-micro/web"
-	"log"
+	"github.com/micro/micro/cmd"
 )
+// main.go
+func init() {
+	//token := &token.Token{}
+	//token.InitConfig("127.0.0.1:8500", "micro", "config", "jwt-key", "key")
 
-//var (
-//	UserClient user.UserService
-//)
+	//plugin.Register(plugin.NewPlugin(
+	//	plugin.WithName("auth"),
+	//	plugin.WithHandler(
+	//		auth.JWTAuthWrapper(),
+	//	),
+	//))
+}
+const name = "API gateway"
 
 func main() {
 
-	// registry
-	registry := consul.NewRegistry(consul.Config(
-		&api.Config{
-			Address: der.GetDevModeConfig("consul.address"),
-			Scheme:  der.GetDevModeConfig("consul.scheme"),
-		}))
-
-	// Create service
-	service := web.NewService(
-		web.Name("deercoder-chat.api"),
-		web.Registry(registry),
-		web.Address(":"+der.GetDevModeConfig("http_port")),
-	)
-
-	_ = service.Init()
-
-	// Create RESTful handler (using Gin)
-	// Register Handler
-	gin.SetMode(gin.DebugMode)
-	// 路由
-	router := routers.SetRouter()
-	// 后台配置
-	// 注释即可取消
-	//back.SetBack(router)
-	// 注册
-	service.Handle("/", router)
-
-	// Run server
-	if err := service.Run(); err != nil {
-		log.Fatal(err)
-	}
+	cmd.Init()
 }

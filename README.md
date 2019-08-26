@@ -1,6 +1,8 @@
 websocket IM  
 
-微服务-即时聊天/设计  
+微服务-即时聊天/设计[RPC]  
+
+[rpc版本, 理应一个服务提供rpc和http两种接口, 这里http接口统一在`api`模块中, `api-gateway`不是很有必要]
 
 - 特点  
 1.内部rpc  

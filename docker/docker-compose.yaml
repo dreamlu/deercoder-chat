@@ -64,6 +64,13 @@ services:
       - 8006:8006
     container_name: d-api
     restart: always
+  # api gateway
+  api:
+    image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-api
+    ports:
+      - 8006:8006
+    container_name: d-api
+    restart: always
   # user service
   user-srv:
     image: registry.cn-hangzhou.aliyuncs.com/dreamlu/common:deercoder-chat-user-srv

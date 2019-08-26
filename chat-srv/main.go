@@ -1,7 +1,7 @@
 package main
 
 import (
-	"deercoder-chat/chat-srv/controllers/chat"
+	"deercoder-chat/chat-srv/handler/chat"
 	"deercoder-chat/chat-srv/proto"
 	"github.com/dreamlu/go-tool"
 	"github.com/hashicorp/consul/api"
