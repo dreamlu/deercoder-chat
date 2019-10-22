@@ -8,7 +8,7 @@ websocket IM
 1.内部rpc  
 2.对外json  
 3.工具类：[go-tool](https://github.com/dreamlu/go-tool)  
-4.websocket即时通讯  
+4.websocket即时通讯[[核心代码](./api/controllers/chat/chatWs.go)]  
 5.[在线接口查看](https://www.eolinker.com/#/share/index?shareCode=jH4ISr)  
 6.[go micro](https://github.com/micro/go-micro) docker化, 具体见Dockerfile  
 7.[docker-compose支持](docker/docker-compose.yaml)   

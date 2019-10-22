@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/dreamlu/go-tool"
 	"github.com/gin-gonic/gin"
-	"github.com/hashicorp/consul/api"
+	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/consul"
 	"github.com/micro/go-micro/web"
 	"log"
@@ -11,17 +11,15 @@ import (
 
 func main() {
 
-	//consul
-	registry := consul.NewRegistry(consul.Config(
-		&api.Config{
-			Address: der.GetDevModeConfig("consul.address"),
-			Scheme:  der.GetDevModeConfig("consul.scheme"),
-		}))
+	// registry
+	reg := consul.NewRegistry(
+		registry.Addrs(gt.Configger().GetString("app.consul.address")),
+	)
 
 	service := web.NewService(
-		web.Name("deercoder-chat.common"),
-		web.Registry(registry),
-		web.Address(":"+der.GetDevModeConfig("http_port")),
+		web.Name("deercoder-chat.front"),
+		web.Registry(reg),
+		web.Address(":"+gt.Configger().GetString("app.port")),
 		web.StaticDir("./static"),
 	)
 

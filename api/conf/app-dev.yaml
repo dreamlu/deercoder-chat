@@ -1,0 +1,17 @@
+app:
+  # database
+  db:
+    host: tcp(127.0.0.1:3306)
+    user: root
+    password: lucheng
+    # database name
+    name: deercoder-chat
+    log: true
+  # redis
+  redis:
+    host: 127.0.0.1:6379
+  # consul
+  consul:
+    address: 127.0.0.1:8500
+  log:
+    level: debug

@@ -5,7 +5,7 @@ import (
 	"deercoder-chat/api/controllers/chat"
 	"deercoder-chat/api/controllers/file"
 	"github.com/dreamlu/go-tool"
-	"github.com/dreamlu/go-tool/util/lib"
+	"github.com/dreamlu/go-tool/tool/result"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/common/log"
 	"net/http"
@@ -17,7 +17,7 @@ func SetRouter() *gin.Engine {
 	// Disable Console Color
 	// gin.DisableConsoleColor()
 	router := gin.New()
-	der.MaxUploadMemory = router.MaxMultipartMemory
+	gt.MaxUploadMemory = router.MaxMultipartMemory
 	router.Use(Cors())
 
 	//router.Use(CheckLogin()) //简单登录验证
@@ -99,14 +99,14 @@ func CheckLogin() gin.HandlerFunc {
 		}
 
 		// 缓存验证
-		var cache der.CacheManager = new(der.RedisManager)
+		var cache gt.CacheManager = new(gt.RedisManager)
 		_ = cache.NewCache()
 		//cacheModel := der.CacheModel{}
 		// redis 存储用户信息
 		uid, err := c.Cookie("uid")
 		if err != nil {
 			c.Abort()
-			c.JSON(http.StatusOK, lib.MapNoAuth)
+			c.JSON(http.StatusOK, result.MapNoAuth)
 		}
 		// key 的类型需要匹配
 		// 这里只是简单验证
@@ -123,7 +123,7 @@ func CheckLogin() gin.HandlerFunc {
 		}
 		if cacheModel.Data == nil {
 			c.Abort()
-			c.JSON(http.StatusOK, lib.MapNoAuth)
+			c.JSON(http.StatusOK, result.MapNoAuth)
 		}
 	}
 }

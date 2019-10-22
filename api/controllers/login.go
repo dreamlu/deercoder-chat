@@ -4,7 +4,7 @@ import (
 	"context"
 	"deercoder-chat/api/conf"
 	"deercoder-chat/user-srv/proto"
-	"github.com/dreamlu/go-tool/util/lib"
+	"github.com/dreamlu/go-tool/tool/result"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
 	"net/http"
@@ -32,14 +32,14 @@ func (p *LoginService) Login(u *gin.Context) {
 
 	if err != nil {
 
-		if err.Error() == lib.MsgCountErr {
-			u.JSON(http.StatusOK, lib.MapNoCount)
+		if err.Error() == result.MsgCountErr {
+			u.JSON(http.StatusOK, result.MapNoCount)
 			return
 		}
 
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }

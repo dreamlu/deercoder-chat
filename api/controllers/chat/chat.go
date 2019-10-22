@@ -5,7 +5,7 @@ import (
 	"deercoder-chat/api/conf"
 	"deercoder-chat/chat-srv/models/chat"
 	"deercoder-chat/chat-srv/proto"
-	"github.com/dreamlu/go-tool/util/lib"
+	"github.com/dreamlu/go-tool/tool/result"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
 	"log"
@@ -59,11 +59,11 @@ func DistributeGroup(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(map[string]interface{}{"group_id": res.Message.GroupId}))
+	u.JSON(http.StatusOK, result.GetSuccess(map[string]interface{}{"group_id": res.Message.GroupId}))
 }
 
 // 拉取群聊所有消息
@@ -78,11 +78,11 @@ func GetAllGroupMsg(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res.Message))
+	u.JSON(http.StatusOK, result.GetSuccess(res.Message))
 }
 
 // 拉取离线信息
@@ -99,11 +99,11 @@ func GetGroupLastMsg(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }
 
 // 已读离线信息
@@ -120,10 +120,10 @@ func ReadGroupLastMsg(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }
 
 // 获取好友列表
@@ -136,10 +136,10 @@ func GetUserList(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }
 
 // 搜索获取好友列表
@@ -154,10 +154,10 @@ func GetUserSearchList(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }
 
 // 获取群聊中用户列表
@@ -170,10 +170,10 @@ func GetGroupUser(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }
 
 //// 创建聊天记录记录
@@ -186,10 +186,10 @@ func GetGroupUser(u *gin.Context) {
 //	})
 //
 //	if err != nil {
-//		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+//		u.JSON(http.StatusOK, result.GetError(err.Error()))
 //		return
 //	}
-//	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+//	u.JSON(http.StatusOK, result.GetSuccess(res))
 //}
 
 // 群发消息

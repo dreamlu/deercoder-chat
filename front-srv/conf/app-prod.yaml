@@ -1,0 +1,5 @@
+app:
+  consul:
+    address: consul:8500
+  log:
+    level: error

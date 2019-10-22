@@ -277,7 +277,7 @@ $("#search").on("keydown", function (e) {
 function getAllMsg(group_id) {
 
     $.ajax({
-        url: myApi + "/chat/allMsg/",
+        url: myApi + "/chat/allMsg",
         method: "GET",
         data: {
             group_id: group_id,

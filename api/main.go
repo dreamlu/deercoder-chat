@@ -4,7 +4,7 @@ import (
 	"deercoder-chat/api/routers"
 	"github.com/dreamlu/go-tool"
 	"github.com/gin-gonic/gin"
-	"github.com/hashicorp/consul/api"
+	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/consul"
 	"github.com/micro/go-micro/web"
 	"log"
@@ -18,18 +18,16 @@ import (
 func main() {
 
 	// registry
-	registry := consul.NewRegistry(consul.Config(
-		&api.Config{
-			Address: der.GetDevModeConfig("consul.address"),
-			Scheme:  der.GetDevModeConfig("consul.scheme"),
-		}))
+	reg := consul.NewRegistry(
+		registry.Addrs(gt.Configger().GetString("app.consul.address")),
+	)
 
 	// Create service
 	service := web.NewService(
 		// 这里指 所有的http 接口api, 非api网关
 		web.Name("deercoder-chat.web.api"),
-		web.Registry(registry),
-		web.Address(":"+der.GetDevModeConfig("http_port")),
+		web.Registry(reg),
+		web.Address(":"+gt.Configger().GetString("app.port")),
 	)
 
 	_ = service.Init()

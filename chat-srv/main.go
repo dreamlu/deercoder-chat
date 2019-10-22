@@ -4,8 +4,8 @@ import (
 	"deercoder-chat/chat-srv/handler/chat"
 	"deercoder-chat/chat-srv/proto"
 	"github.com/dreamlu/go-tool"
-	"github.com/hashicorp/consul/api"
 	"github.com/micro/go-micro"
+	"github.com/micro/go-micro/registry"
 	"github.com/micro/go-micro/registry/consul"
 	"log"
 )
@@ -13,22 +13,17 @@ import (
 func main() {
 
 	// registry
-	registry := consul.NewRegistry(consul.Config(
-		&api.Config{
-			Address: der.GetDevModeConfig("consul.address"),
-			Scheme:  der.GetDevModeConfig("consul.scheme"),
-		}))
+	reg := consul.NewRegistry(
+		registry.Addrs(gt.Configger().GetString("app.consul.address")),
+	)
 
 	service := micro.NewService(
 		micro.Name("deercoder-chat.chat"),
-		micro.Registry(registry),
+		micro.Registry(reg),
 		//micro.RegisterTTL(time.Second*30),
 		//micro.RegisterInterval(time.Second*10),
-		micro.Address(":"+der.GetDevModeConfig("http_port")),
+		micro.Address(":"+gt.Configger().GetString("app.port")),
 	)
-
-	// start DB
-	der.NewDB()
 
 	// service init
 	service.Init()

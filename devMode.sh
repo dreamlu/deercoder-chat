@@ -18,7 +18,7 @@ wsProtocol=ws
 
 # 后端配置文件地址
 # 修改各个模块下app.conf文件开发模式
-confFiles=(api/conf/app.conf chat-srv/conf/app.conf user-srv/conf/app.conf front-srv/conf/app.conf)
+confFiles=(api/conf/app.yaml chat-srv/conf/app.yaml user-srv/conf/app.yaml front-srv/conf/app.yaml)
 # 前端配置文件地址
 apiFile=front-srv/static/js/chat.js
 
@@ -28,7 +28,7 @@ for conf in ${confFiles[@]}
 do
 echo "配置文件: "${conf}
 # 替换源文件第二行内容
-sed -i '2c devMode = '${devMode} ${conf}
+sed -i '3c \  \devMode: '${devMode} "${conf}"
 done
 
 # 前端api修改

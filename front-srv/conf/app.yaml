@@ -1,0 +1,6 @@
+app:
+  # dev mode
+  devMode: dev
+  port: 3000
+  consul:
+    scheme: http

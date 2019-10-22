@@ -4,7 +4,7 @@ import (
 	"context"
 	"deercoder-chat/api/conf"
 	user "deercoder-chat/user-srv/proto"
-	"github.com/dreamlu/go-tool/util/lib"
+	"github.com/dreamlu/go-tool/tool/result"
 	"github.com/gin-gonic/gin"
 	"github.com/micro/go-micro/client"
 	"net/http"
@@ -29,16 +29,16 @@ func (p *UserService) GetByID(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
 	if res == nil {
-		u.JSON(http.StatusOK, lib.MapNoResult)
+		u.JSON(http.StatusOK, result.MapNoResult)
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.GetMapDataSuccess(res))
+	u.JSON(http.StatusOK, result.GetSuccess(res))
 }
 
 //用户信息分页
@@ -54,18 +54,22 @@ func (p *UserService) GetBySearch(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
 	if res == nil {
-		u.JSON(http.StatusOK, lib.MapNoResult)
+		u.JSON(http.StatusOK, result.MapNoResult)
 		return
 	}
 
 	clientPage, _ := strconv.ParseInt(params["clientPage"], 10, 64)
 	everyPage, _ := strconv.ParseInt(params["everyPage"], 10, 64)
-	u.JSON(http.StatusOK, lib.GetMapDataPager(res.User, clientPage, everyPage, res.SumPage))
+	u.JSON(http.StatusOK, result.GetSuccessPager(res.User, result.Pager{
+		ClientPage: clientPage,
+		EveryPage:  everyPage,
+		TotalNum:   res.SumPage,
+	}))
 }
 
 //用户信息删除
@@ -76,11 +80,11 @@ func (p *UserService) Delete(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.MapUpdate)
+	u.JSON(http.StatusOK, result.MapUpdate)
 }
 
 //用户信息修改
@@ -96,11 +100,11 @@ func (p *UserService) Update(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.MapUpdate)
+	u.JSON(http.StatusOK, result.MapUpdate)
 }
 
 //新增用户信息
@@ -116,9 +120,9 @@ func (p *UserService) Create(u *gin.Context) {
 	})
 
 	if err != nil {
-		u.JSON(http.StatusOK, lib.GetMapDataError(err.Error()))
+		u.JSON(http.StatusOK, result.GetError(err.Error()))
 		return
 	}
 
-	u.JSON(http.StatusOK, lib.MapCreate)
+	u.JSON(http.StatusOK, result.MapCreate)
 }

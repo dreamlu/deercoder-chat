@@ -1,0 +1,19 @@
+app:
+  # dev mode
+  devMode: dev
+  port: 8006
+  # database
+  db:
+    maxIdleConn: 20
+    maxOpenConn: 100
+  # upload filepath
+  filepath: static/file/
+  # redis
+  redis:
+    database: 0
+    poolSize: 0
+    minIdleConns: 0
+    password:
+  # consul
+  consul:
+    scheme: http
