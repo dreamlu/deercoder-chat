@@ -24,6 +24,9 @@ n....
 - 微服务各个模块运行状态(这里consul进行服务发现)  
 [http://localhost:8500](http://localhost:8500)
 
+- 运行  
+![websocket聊天](front-srv/static/img/chat.gif)
+
 - 登录  
 ![登录页面](common-srv/static/img/login.png)  
 
