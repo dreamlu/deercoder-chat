@@ -2,7 +2,9 @@ websocket IM
 
 微服务-即时聊天/设计[RPC]  
 
-[rpc版本, 理应一个服务提供rpc和http两种接口, 这里http接口统一在`api`模块中, `api-gateway`不是很有必要]
+[rpc版本, 理应一个服务提供rpc和http两种接口, 这里http接口统一在`api`模块中, `api-gateway`不是很有必要]  
+
+对应http版[micro-go](https://github.com/dreamlu/micro-go), 特点: 快速开发,真实业务应用  
 
 - 特点  
 1.内部rpc  
@@ -15,7 +17,8 @@ websocket IM
 8.[k8s支持](docker/k8s/README.md)  
 n....  
 
-> 状态-ing  
+> 状态-end    
+> ps: 如需升级go-micro, .proto文件之前生成的代码或许需要重新生成  
 
 - 扩展  
 1.mysql自动备份,[备份规则](docker/mysql/bak.sh)  
