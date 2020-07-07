@@ -41,7 +41,7 @@ func main() {
 	// 注释即可取消
 	//back.SetBack(router)
 	// 注册
-	service.Handle("/", http.StripPrefix("/api",router))
+	service.Handle("/", http.StripPrefix("/api", router))
 
 	// Run server
 	if err := service.Run(); err != nil {
